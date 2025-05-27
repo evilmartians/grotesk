@@ -46,7 +46,7 @@ For better legibility in design editor font pickers—where font lists are usual
 
 ### Personality
 
-Martian Grotesk is designed for body text, but its distinct details take it a few steps beyond a neutral typeface. Features like overhanging terminals in characters such as a, e, and s, and hooks in f, j, and t give the text a recognizable “flavor.” This makes Martian Grotesk a strong foundation for any brand looking to stand out and be instantly recognizable.
+Martian Grotesk is designed for body text, but its distinct details take it a few steps beyond a neutral typeface. Features like overhanging terminals in characters such as `a`, `e`, and `s`, and monospaced-style hooks in `f`, `j`, and `t` give the text a recognizable “flavor.” This makes Martian Grotesk a strong foundation for any brand looking to stand out and be instantly recognizable.
 
 <img src="./documentation/personality.png" width="830">
 
