@@ -99,3 +99,5 @@ Use the following code to embed:
 ## Language support
 
 The typeface supports 308 languages: 297 based on the Latin script and 11 using the Cyrillic script.
+
+<img src="./documentation/charset.png" width="830">
