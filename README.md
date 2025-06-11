@@ -10,6 +10,15 @@ It’s especially optimized for on-screen use. Vertical metrics ensure that text
 
 Also, check out Grotesk’s monospaced sibling—[Martian Mono](https://github.com/evilmartians/mono).
 
+---
+
+<img src="https://cdn.evilmartians.com/badges/logo-no-label.svg" alt="" width="22" height="16" />  Made
+by
+<b><a href="https://evilmartians.com/devtools?utm_source=martian-grotesk&utm_campaign=devtools-button&utm_medium=github">Evil
+Martians</a></b>, product consulting for <b>developer tools</b>.
+
+---
+
 ## Styles and weights
 
 Martian Grotesk includes 63 static styles: [Thin—Ultra Black] × [Condensed—Ultra Wide].
