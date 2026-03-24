@@ -1,0 +1,1717 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Martian Grotesk: Old vs GF Build Comparison</title>
+  <style id="dynamicFonts">
+    @font-face {
+      font-family: "MartianOld";
+      src: url("MartianGrotesk-old.ttf") format("truetype");
+      font-display: swap;
+    }
+
+    @font-face {
+      font-family: "MartianNew";
+      src: url("MartianGrotesk-new.ttf") format("truetype");
+      font-display: swap;
+    }
+  </style>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    comparison-app,
+    fs-viewer,
+    source-toggle,
+    var-controls,
+    static-controls,
+    size-control,
+    filter-control,
+    glyph-grid,
+    view-tabs,
+    text-preview {
+      display: contents;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 20px;
+    }
+
+    .controls {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #0a0a0a;
+      padding: 16px 0;
+      border-bottom: 1px solid #222;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: end;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .control-group label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-group input[type="range"] {
+      width: 200px;
+      accent-color: #6e6;
+    }
+
+    .control-group .value {
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .source-toggle {
+      display: flex;
+      gap: 4px;
+    }
+
+    .source-toggle button {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .source-toggle button.active {
+      background: #222;
+      border-color: #555;
+      color: #fff;
+    }
+
+    .source-toggle button:hover {
+      border-color: #555;
+    }
+
+    .control-group select {
+      background: #111;
+      color: #ccc;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .control-group select:hover {
+      border-color: #555;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-buttons button {
+      padding: 4px 12px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .filter-buttons button.active {
+      background: #222;
+      border-color: #555;
+      color: #fff;
+    }
+
+    .filter-buttons button:hover {
+      border-color: #555;
+    }
+
+    .stats {
+      font-size: 12px;
+      color: #666;
+      display: flex;
+      gap: 16px;
+      align-self: end;
+      padding-bottom: 2px;
+    }
+
+    .stats span {
+      white-space: nowrap;
+    }
+
+    .stats .new-count {
+      color: #6e6;
+    }
+
+    .block-section {
+      margin-bottom: 32px;
+    }
+
+    .block-title {
+      font-size: 14px;
+      font-weight: 600;
+      color: #aaa;
+      padding: 6px 0;
+      border-bottom: 1px solid #1a1a1a;
+      margin-bottom: 8px;
+      position: sticky;
+      top: 80px;
+      background: #0a0a0a;
+      z-index: 50;
+    }
+
+    .block-title .count {
+      font-weight: 400;
+      color: #555;
+      font-size: 12px;
+    }
+
+    .glyph-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+      gap: 2px;
+    }
+
+    .glyph-cell {
+      background: #111;
+      border: 1px solid #1a1a1a;
+      border-radius: 4px;
+      padding: 4px;
+      text-align: center;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .glyph-cell:hover {
+      border-color: #444;
+    }
+
+    .glyph-cell.new-only {
+      border-color: #264026;
+    }
+
+    .glyph-cell.diff {
+      border-color: #664400;
+    }
+
+    .glyph-cp {
+      font-size: 9px;
+      color: #555;
+      font-family: monospace;
+      margin-bottom: 2px;
+    }
+
+    .glyph-cp .name {
+      display: block;
+      color: #444;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .glyph-pair {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+    }
+
+    .glyph-render {
+      font-size: var(--glyph-size, 32px);
+      font-variation-settings: var(--vs);
+      line-height: 1.3;
+      height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 2px;
+    }
+
+    .glyph-render.old {
+      font-family: "MartianOld", sans-serif;
+      background: #0d0d0d;
+    }
+
+    .glyph-render.new {
+      font-family: "MartianNew", sans-serif;
+      background: #0d0d0d;
+    }
+
+    .glyph-cell.new-only .glyph-render.old {
+      color: #333;
+    }
+
+    .glyph-cell.new-only .glyph-render.old::after {
+      content: "n/a";
+      font-size: 9px;
+      font-family: monospace;
+    }
+
+    .pair-labels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2px;
+      margin-top: 1px;
+    }
+
+    .pair-labels span {
+      font-size: 8px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #444;
+      text-align: center;
+    }
+
+    .legend {
+      display: flex;
+      gap: 16px;
+      font-size: 11px;
+      color: #888;
+      margin-bottom: 16px;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .legend-swatch {
+      width: 12px;
+      height: 12px;
+      border-radius: 2px;
+      border: 1px solid;
+    }
+
+    .legend-swatch.both {
+      border-color: #1a1a1a;
+      background: #111;
+    }
+
+    .legend-swatch.new-only {
+      border-color: #264026;
+      background: #111;
+    }
+
+    .view-tabs {
+      display: flex;
+      gap: 4px;
+      margin-bottom: 16px;
+    }
+
+    .view-tabs button {
+      padding: 6px 16px;
+      font-size: 13px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .view-tabs button.active {
+      background: #222;
+      border-color: #555;
+      color: #fff;
+    }
+
+    .view-tabs button:hover {
+      border-color: #555;
+    }
+
+    .text-preview-controls {
+      margin-bottom: 12px;
+    }
+
+    .text-preview-controls select {
+      background: #111;
+      color: #ccc;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 6px 10px;
+      font-size: 13px;
+      cursor: pointer;
+    }
+
+    .text-preview-controls select:hover {
+      border-color: #555;
+    }
+
+    .text-preview textarea {
+      width: 100%;
+      min-height: 100px;
+      background: #111;
+      color: #e0e0e0;
+      border: 1px solid #333;
+      border-radius: 6px;
+      padding: 12px;
+      font-size: 14px;
+      font-family: system-ui, -apple-system, sans-serif;
+      resize: vertical;
+      margin-bottom: 16px;
+    }
+
+    .text-preview textarea:focus {
+      outline: none;
+      border-color: #555;
+    }
+
+    .text-preview textarea::placeholder {
+      color: #555;
+    }
+
+    .text-preview-panels {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .text-panel {
+      background: #111;
+      border: 1px solid #1a1a1a;
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .text-panel-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #444;
+      padding: 8px 16px;
+      border-bottom: 1px solid #1a1a1a;
+    }
+
+    .text-panel-content {
+      padding: 24px;
+      font-size: var(--glyph-size, 28px);
+      line-height: 1.5;
+      font-variation-settings: var(--vs);
+      min-height: 200px;
+      white-space: pre-wrap;
+      word-break: break-word;
+    }
+
+    .text-panel-content.old {
+      font-family: "MartianOld", sans-serif;
+    }
+
+    .text-panel-content.new {
+      font-family: "MartianNew", sans-serif;
+    }
+
+    .text-panel-content .new-char {
+      background: #1a2e1a;
+      border-radius: 2px;
+    }
+
+    .font-size-control {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .font-size-control button {
+      width: 24px;
+      height: 24px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .font-size-control button:hover {
+      border-color: #555;
+    }
+
+    .fullscreen-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #0a0a0a;
+      padding: 24px;
+    }
+
+    .fullscreen-overlay.open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fs-header {
+      flex-shrink: 0;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+
+    .fs-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .fs-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .fs-title .cp {
+      color: #888;
+      font-family: monospace;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .fs-title .block-name {
+      color: #555;
+      font-size: 13px;
+      font-weight: 400;
+      margin-left: 12px;
+    }
+
+    .fs-title .new-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: #6e6;
+      border: 1px solid #264026;
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .fs-close {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .fs-close:hover {
+      border-color: #555;
+      color: #fff;
+    }
+
+    .fs-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: end;
+    }
+
+    .fs-nav {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .fs-nav button {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .fs-nav button:hover {
+      border-color: #555;
+      color: #fff;
+    }
+
+    .fs-nav span {
+      font-size: 11px;
+      color: #555;
+    }
+
+    .fs-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      min-height: 0;
+      padding-top: 24px;
+    }
+
+    .fs-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+      border-radius: 8px;
+      border: 1px solid #1a1a1a;
+      position: relative;
+    }
+
+    .fs-side-label {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #444;
+    }
+
+    .fs-glyph {
+      font-size: 200px;
+      line-height: 1;
+      position: relative;
+      overflow: visible;
+    }
+
+    .fs-bbox {
+      position: absolute;
+      border: 1.5px dashed rgba(255, 200, 0, 0.6);
+      pointer-events: none;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    .fs-body.show-bbox .fs-bbox {
+      display: block;
+    }
+
+    .fs-body.overlay-mode .fs-side.old .fs-bbox {
+      border-color: rgba(238, 68, 68, 0.7);
+    }
+
+    .fs-body.overlay-mode .fs-side.new .fs-bbox {
+      border-color: rgba(68, 136, 255, 0.7);
+    }
+
+    .fs-side.old .fs-glyph {
+      font-family: "MartianOld", sans-serif;
+    }
+
+    .fs-side.new .fs-glyph {
+      font-family: "MartianNew", sans-serif;
+    }
+
+    .fs-side.old.unavailable .fs-glyph {
+      display: none;
+    }
+
+    .fs-side.old.unavailable::after {
+      content: "not in old font";
+      font-size: 14px;
+      color: #333;
+      font-family: system-ui, sans-serif;
+    }
+
+    .fs-body.overlay-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .fs-body.overlay-mode .fs-side {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    .fs-body.overlay-mode .fs-side.old {
+      background: transparent;
+      border-color: transparent;
+      z-index: 2;
+      mix-blend-mode: screen;
+    }
+
+    .fs-body.overlay-mode .fs-side.old .fs-glyph {
+      color: #e44;
+    }
+
+    .fs-body.overlay-mode .fs-side.old .fs-side-label {
+      color: #e44;
+    }
+
+    .fs-body.overlay-mode .fs-side.new {
+      z-index: 1;
+    }
+
+    .fs-body.overlay-mode .fs-side.new .fs-glyph {
+      color: #48f;
+    }
+
+    .fs-body.overlay-mode .fs-side.new .fs-side-label {
+      color: #48f;
+    }
+
+    .fs-mode-toggle {
+      display: flex;
+      gap: 4px;
+    }
+
+    .fs-mode-toggle button {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .fs-mode-toggle button.active {
+      background: #222;
+      border-color: #555;
+      color: #fff;
+    }
+
+    .fs-mode-toggle button:hover {
+      border-color: #555;
+    }
+
+    .overlay-legend {
+      display: none;
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #666;
+      gap: 16px;
+      z-index: 10;
+    }
+
+    .fs-body.overlay-mode~.overlay-legend,
+    .overlay-legend.visible {
+      display: flex;
+    }
+
+    .overlay-legend .ol-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .overlay-legend .ol-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    .overlay-legend .ol-swatch.old-color {
+      background: #e44;
+    }
+
+    .overlay-legend .ol-swatch.new-color {
+      background: #48f;
+    }
+
+    .overlay-legend .ol-swatch.match-color {
+      background: #c4f;
+    }
+  </style>
+</head>
+
+<body>
+
+  <comparison-app>
+    <h1>Martian Grotesk: Designer vs GF Build</h1>
+    <p class="subtitle">Side-by-side glyph comparison. Left = old (designer), Right = new (GF build).</p>
+
+    <div class="controls">
+      <source-toggle>
+        <div class="control-group">
+          <label>Font source</label>
+          <div class="source-toggle" data-ref="toggle">
+            <button class="active" data-src="variable">Variable</button>
+            <button data-src="static">Static</button>
+          </div>
+        </div>
+      </source-toggle>
+      <var-controls>
+        <div class="control-group">
+          <label>Weight <span class="value" data-ref="wghtVal">400</span></label>
+          <input type="range" data-ref="wght" min="100" max="1000" value="400" step="1">
+        </div>
+        <div class="control-group">
+          <label>Width <span class="value" data-ref="wdthVal">100</span></label>
+          <input type="range" data-ref="wdth" min="75" max="200" value="100" step="1">
+        </div>
+      </var-controls>
+      <static-controls class="hidden">
+        <div class="control-group">
+          <label>Width</label>
+          <select data-ref="width"></select>
+        </div>
+        <div class="control-group">
+          <label>Weight</label>
+          <select data-ref="weight"></select>
+        </div>
+      </static-controls>
+      <size-control min="16" max="72" step="4">
+        <div class="control-group">
+          <label>Glyph size</label>
+          <div class="font-size-control">
+            <button data-ref="down">-</button>
+            <span class="value" data-ref="val">32</span>
+            <button data-ref="up">+</button>
+          </div>
+        </div>
+      </size-control>
+      <filter-control>
+        <div class="control-group">
+          <label>Filter</label>
+          <div class="filter-buttons" data-ref="buttons">
+            <button class="active" data-filter="all">All</button>
+            <button data-filter="both">Shared</button>
+            <button data-filter="new">New only</button>
+          </div>
+        </div>
+      </filter-control>
+      <div class="stats">
+        <span class="old-count"></span>
+        <span class="new-count"></span>
+      </div>
+    </div>
+
+    <view-tabs>
+      <div class="view-tabs" data-ref="tabs">
+        <button class="active" data-view="grid">Grid</button>
+        <button data-view="text">Text Preview</button>
+      </div>
+    </view-tabs>
+
+    <div class="legend" data-ref="legend">
+      <div class="legend-item">
+        <div class="legend-swatch both"></div> In both fonts
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch new-only"></div> New in GF build
+      </div>
+    </div>
+
+    <glyph-grid>
+      <template data-ref="blockTpl">
+        <div class="block-section">
+          <div class="block-title"></div>
+          <div class="glyph-grid"></div>
+        </div>
+      </template>
+
+      <template data-ref="cellTpl">
+        <div class="glyph-cell">
+          <div class="glyph-cp"></div>
+          <div class="glyph-pair">
+            <div class="glyph-render old"></div>
+            <div class="glyph-render new"></div>
+          </div>
+          <div class="pair-labels"><span>old</span><span>new</span></div>
+        </div>
+      </template>
+
+      <div data-ref="content"></div>
+    </glyph-grid>
+
+    <text-preview class="hidden">
+      <div class="text-preview">
+        <div class="text-preview-controls">
+          <select data-ref="samples">
+            <option value="">Custom text...</option>
+            <option value="serbian">Serbian</option>
+            <option value="macedonian">Macedonian</option>
+            <option value="ukrainian">Ukrainian</option>
+            <option value="belarusian">Belarusian</option>
+            <option value="bulgarian">Bulgarian</option>
+            <option value="mixed">Mixed showcase</option>
+          </select>
+        </div>
+        <textarea data-ref="input" rows="4"
+          placeholder="Type or paste text here to preview in both fonts..."></textarea>
+        <div class="text-preview-panels">
+          <div class="text-panel">
+            <div class="text-panel-label">Old (designer)</div>
+            <div class="text-panel-content old" data-ref="oldPanel"></div>
+          </div>
+          <div class="text-panel">
+            <div class="text-panel-label">New (GF build)</div>
+            <div class="text-panel-content new" data-ref="newPanel"></div>
+          </div>
+        </div>
+      </div>
+    </text-preview>
+  </comparison-app>
+
+  <fs-viewer>
+    <div class="fullscreen-overlay" data-ref="overlay">
+      <div class="fs-header">
+        <div class="fs-top-row">
+          <div class="fs-title" data-ref="title"></div>
+          <button class="fs-close" data-ref="closeBtn" title="Close (Esc)">&times;</button>
+        </div>
+        <div class="fs-controls">
+          <source-toggle>
+            <div class="control-group">
+              <label>Font source</label>
+              <div class="source-toggle" data-ref="toggle">
+                <button class="active" data-src="variable">Variable</button>
+                <button data-src="static">Static</button>
+              </div>
+            </div>
+          </source-toggle>
+          <var-controls>
+            <div class="control-group">
+              <label>Weight <span class="value" data-ref="wghtVal">400</span></label>
+              <input type="range" data-ref="wght" min="100" max="1000" value="400" step="1">
+            </div>
+            <div class="control-group">
+              <label>Width <span class="value" data-ref="wdthVal">100</span></label>
+              <input type="range" data-ref="wdth" min="75" max="200" value="100" step="1">
+            </div>
+          </var-controls>
+          <static-controls class="hidden">
+            <div class="control-group">
+              <label>Width</label>
+              <select data-ref="width"></select>
+            </div>
+            <div class="control-group">
+              <label>Weight</label>
+              <select data-ref="weight"></select>
+            </div>
+          </static-controls>
+          <size-control min="48" max="600" step="32">
+            <div class="control-group">
+              <label>Glyph size</label>
+              <div class="font-size-control">
+                <button data-ref="down">-</button>
+                <span class="value" data-ref="val">500</span>
+                <button data-ref="up">+</button>
+              </div>
+            </div>
+          </size-control>
+          <div class="control-group">
+            <label>Mode</label>
+            <div class="fs-mode-toggle" data-ref="modeToggle">
+              <button data-mode="side">Side by side</button>
+              <button class="active" data-mode="overlay">Overlay</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <label>Bbox</label>
+            <div class="fs-mode-toggle" data-ref="bboxToggle">
+              <button data-bbox="off" class="active">Off</button>
+              <button data-bbox="on">On</button>
+            </div>
+          </div>
+          <div class="control-group" data-ref="opacityGroup">
+            <label>Old layer opacity <span class="value" data-ref="opacityVal">50%</span></label>
+            <input type="range" data-ref="opacity" min="0" max="100" value="50" step="1">
+          </div>
+          <div class="fs-nav">
+            <button data-ref="prevBtn" title="Previous glyph (Left arrow)">&larr; Prev</button>
+            <span data-ref="blockIndex"></span>
+            <button data-ref="nextBtn" title="Next glyph (Right arrow)">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+      <div class="fs-body overlay-mode" data-ref="body">
+        <div class="fs-side old" data-ref="oldSide" style="opacity:0.5">
+          <div class="fs-side-label">Old (designer)</div>
+          <div class="fs-glyph" data-ref="glyphOld"><span data-ref="charOld"></span>
+            <div class="fs-bbox" data-ref="bboxOld"></div>
+          </div>
+        </div>
+        <div class="fs-side new">
+          <div class="fs-side-label">New (GF build)</div>
+          <div class="fs-glyph" data-ref="glyphNew"><span data-ref="charNew"></span>
+            <div class="fs-bbox" data-ref="bboxNew"></div>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-legend visible" data-ref="legend">
+        <div class="ol-item">
+          <div class="ol-swatch old-color"></div> Old only (red)
+        </div>
+        <div class="ol-item">
+          <div class="ol-swatch new-color"></div> New only (blue)
+        </div>
+        <div class="ol-item">
+          <div class="ol-swatch match-color"></div> Overlap (pink/white)
+        </div>
+      </div>
+    </div>
+  </fs-viewer>
+
+  <script type="module">
+    import { define } from "https://esm.sh/nano-wc";
+    import { renderList } from "https://esm.sh/nano-wc/render";
+    import { createContext } from "https://esm.sh/nano-wc/context";
+    import { atom, computed } from "https://esm.sh/nanostores";
+    import opentype from "https://esm.sh/opentype.js";
+
+    // === Data ===
+
+    // Comprehensive Unicode blocks for display grouping (BMP, excluding
+    // CJK Unified, Hangul Syllables, PUA, and Surrogates)
+    const BLOCKS = [
+      [0x0000, 0x007F, "Basic Latin"],
+      [0x0080, 0x00FF, "Latin-1 Supplement"],
+      [0x0100, 0x017F, "Latin Extended-A"],
+      [0x0180, 0x024F, "Latin Extended-B"],
+      [0x0250, 0x02AF, "IPA Extensions"],
+      [0x02B0, 0x02FF, "Spacing Modifier Letters"],
+      [0x0300, 0x036F, "Combining Diacritical Marks"],
+      [0x0370, 0x03FF, "Greek and Coptic"],
+      [0x0400, 0x04FF, "Cyrillic"],
+      [0x0500, 0x052F, "Cyrillic Supplement"],
+      [0x0530, 0x058F, "Armenian"],
+      [0x0590, 0x05FF, "Hebrew"],
+      [0x0600, 0x06FF, "Arabic"],
+      [0x0700, 0x074F, "Syriac"],
+      [0x0750, 0x077F, "Arabic Supplement"],
+      [0x0780, 0x07BF, "Thaana"],
+      [0x07C0, 0x07FF, "NKo"],
+      [0x0800, 0x083F, "Samaritan"],
+      [0x0840, 0x085F, "Mandaic"],
+      [0x0860, 0x086F, "Syriac Supplement"],
+      [0x0870, 0x089F, "Arabic Extended-B"],
+      [0x08A0, 0x08FF, "Arabic Extended-A"],
+      [0x0900, 0x097F, "Devanagari"],
+      [0x0980, 0x09FF, "Bengali"],
+      [0x0A00, 0x0A7F, "Gurmukhi"],
+      [0x0A80, 0x0AFF, "Gujarati"],
+      [0x0B00, 0x0B7F, "Oriya"],
+      [0x0B80, 0x0BFF, "Tamil"],
+      [0x0C00, 0x0C7F, "Telugu"],
+      [0x0C80, 0x0CFF, "Kannada"],
+      [0x0D00, 0x0D7F, "Malayalam"],
+      [0x0D80, 0x0DFF, "Sinhala"],
+      [0x0E00, 0x0E7F, "Thai"],
+      [0x0E80, 0x0EFF, "Lao"],
+      [0x0F00, 0x0FFF, "Tibetan"],
+      [0x1000, 0x109F, "Myanmar"],
+      [0x10A0, 0x10FF, "Georgian"],
+      [0x1100, 0x11FF, "Hangul Jamo"],
+      [0x1200, 0x137F, "Ethiopic"],
+      [0x1380, 0x139F, "Ethiopic Supplement"],
+      [0x13A0, 0x13FF, "Cherokee"],
+      [0x1400, 0x167F, "Canadian Aboriginal Syllabics"],
+      [0x1680, 0x169F, "Ogham"],
+      [0x16A0, 0x16FF, "Runic"],
+      [0x1700, 0x171F, "Tagalog"],
+      [0x1720, 0x173F, "Hanunoo"],
+      [0x1740, 0x175F, "Buhid"],
+      [0x1760, 0x177F, "Tagbanwa"],
+      [0x1780, 0x17FF, "Khmer"],
+      [0x1800, 0x18AF, "Mongolian"],
+      [0x18B0, 0x18FF, "Canadian Syllabics Extended"],
+      [0x1900, 0x194F, "Limbu"],
+      [0x1950, 0x197F, "Tai Le"],
+      [0x1980, 0x19DF, "New Tai Lue"],
+      [0x19E0, 0x19FF, "Khmer Symbols"],
+      [0x1A00, 0x1A1F, "Buginese"],
+      [0x1A20, 0x1AAF, "Tai Tham"],
+      [0x1AB0, 0x1AFF, "Combining Diacritical Marks Extended"],
+      [0x1B00, 0x1B7F, "Balinese"],
+      [0x1B80, 0x1BBF, "Sundanese"],
+      [0x1BC0, 0x1BFF, "Batak"],
+      [0x1C00, 0x1C4F, "Lepcha"],
+      [0x1C50, 0x1C7F, "Ol Chiki"],
+      [0x1C80, 0x1C8F, "Cyrillic Extended-C"],
+      [0x1C90, 0x1CBF, "Georgian Extended"],
+      [0x1CC0, 0x1CCF, "Sundanese Supplement"],
+      [0x1CD0, 0x1CFF, "Vedic Extensions"],
+      [0x1D00, 0x1D7F, "Phonetic Extensions"],
+      [0x1D80, 0x1DBF, "Phonetic Extensions Supplement"],
+      [0x1DC0, 0x1DFF, "Combining Diacritical Marks Supplement"],
+      [0x1E00, 0x1EFF, "Latin Extended Additional"],
+      [0x1F00, 0x1FFF, "Greek Extended"],
+      [0x2000, 0x206F, "General Punctuation"],
+      [0x2070, 0x209F, "Superscripts and Subscripts"],
+      [0x20A0, 0x20CF, "Currency Symbols"],
+      [0x20D0, 0x20FF, "Combining Marks for Symbols"],
+      [0x2100, 0x214F, "Letterlike Symbols"],
+      [0x2150, 0x218F, "Number Forms"],
+      [0x2190, 0x21FF, "Arrows"],
+      [0x2200, 0x22FF, "Mathematical Operators"],
+      [0x2300, 0x23FF, "Miscellaneous Technical"],
+      [0x2400, 0x243F, "Control Pictures"],
+      [0x2440, 0x245F, "Optical Character Recognition"],
+      [0x2460, 0x24FF, "Enclosed Alphanumerics"],
+      [0x2500, 0x257F, "Box Drawing"],
+      [0x2580, 0x259F, "Block Elements"],
+      [0x25A0, 0x25FF, "Geometric Shapes"],
+      [0x2600, 0x26FF, "Miscellaneous Symbols"],
+      [0x2700, 0x27BF, "Dingbats"],
+      [0x27C0, 0x27EF, "Misc. Math Symbols-A"],
+      [0x27F0, 0x27FF, "Supplemental Arrows-A"],
+      [0x2800, 0x28FF, "Braille Patterns"],
+      [0x2900, 0x297F, "Supplemental Arrows-B"],
+      [0x2980, 0x29FF, "Misc. Math Symbols-B"],
+      [0x2A00, 0x2AFF, "Supplemental Math Operators"],
+      [0x2B00, 0x2BFF, "Misc. Symbols and Arrows"],
+      [0x2C00, 0x2C5F, "Glagolitic"],
+      [0x2C60, 0x2C7F, "Latin Extended-C"],
+      [0x2C80, 0x2CFF, "Coptic"],
+      [0x2D00, 0x2D2F, "Georgian Supplement"],
+      [0x2D30, 0x2D7F, "Tifinagh"],
+      [0x2D80, 0x2DDF, "Ethiopic Extended"],
+      [0x2DE0, 0x2DFF, "Cyrillic Extended-A"],
+      [0x2E00, 0x2E7F, "Supplemental Punctuation"],
+      [0x2E80, 0x2EFF, "CJK Radicals Supplement"],
+      [0x2F00, 0x2FDF, "Kangxi Radicals"],
+      [0x3000, 0x303F, "CJK Symbols and Punctuation"],
+      [0x3040, 0x309F, "Hiragana"],
+      [0x30A0, 0x30FF, "Katakana"],
+      [0x3100, 0x312F, "Bopomofo"],
+      [0x3130, 0x318F, "Hangul Compatibility Jamo"],
+      [0x3190, 0x319F, "Kanbun"],
+      [0x31A0, 0x31BF, "Bopomofo Extended"],
+      [0x31C0, 0x31EF, "CJK Strokes"],
+      [0x31F0, 0x31FF, "Katakana Phonetic Extensions"],
+      [0x3200, 0x32FF, "Enclosed CJK Letters and Months"],
+      [0x3300, 0x33FF, "CJK Compatibility"],
+      [0x4DC0, 0x4DFF, "Yijing Hexagram Symbols"],
+      [0xA000, 0xA48F, "Yi Syllables"],
+      [0xA490, 0xA4CF, "Yi Radicals"],
+      [0xA4D0, 0xA4FF, "Lisu"],
+      [0xA500, 0xA63F, "Vai"],
+      [0xA640, 0xA69F, "Cyrillic Extended-B"],
+      [0xA6A0, 0xA6FF, "Bamum"],
+      [0xA700, 0xA71F, "Modifier Tone Letters"],
+      [0xA720, 0xA7FF, "Latin Extended-D"],
+      [0xA800, 0xA82F, "Syloti Nagri"],
+      [0xA830, 0xA83F, "Common Indic Number Forms"],
+      [0xA840, 0xA87F, "Phags-pa"],
+      [0xA880, 0xA8DF, "Saurashtra"],
+      [0xA8E0, 0xA8FF, "Devanagari Extended"],
+      [0xA900, 0xA92F, "Kayah Li"],
+      [0xA930, 0xA95F, "Rejang"],
+      [0xA960, 0xA97F, "Hangul Jamo Extended-A"],
+      [0xA980, 0xA9DF, "Javanese"],
+      [0xA9E0, 0xA9FF, "Myanmar Extended-B"],
+      [0xAA00, 0xAA5F, "Cham"],
+      [0xAA60, 0xAA7F, "Myanmar Extended-A"],
+      [0xAA80, 0xAADF, "Tai Viet"],
+      [0xAAE0, 0xAAFF, "Meetei Mayek Extensions"],
+      [0xAB00, 0xAB2F, "Ethiopic Extended-A"],
+      [0xAB30, 0xAB6F, "Latin Extended-E"],
+      [0xAB70, 0xABBF, "Cherokee Supplement"],
+      [0xABC0, 0xABFF, "Meetei Mayek"],
+      [0xFB00, 0xFB06, "Alphabetic Presentation Forms"],
+      [0xFB13, 0xFB17, "Armenian Presentation Forms"],
+      [0xFB1D, 0xFB4F, "Hebrew Presentation Forms"],
+      [0xFB50, 0xFDFF, "Arabic Presentation Forms-A"],
+      [0xFE00, 0xFE0F, "Variation Selectors"],
+      [0xFE10, 0xFE1F, "Vertical Forms"],
+      [0xFE20, 0xFE2F, "Combining Half Marks"],
+      [0xFE30, 0xFE4F, "CJK Compatibility Forms"],
+      [0xFE50, 0xFE6F, "Small Form Variants"],
+      [0xFE70, 0xFEFF, "Arabic Presentation Forms-B"],
+      [0xFF00, 0xFFEF, "Halfwidth and Fullwidth Forms"],
+      [0xFFF0, 0xFFFD, "Specials"],
+    ];
+
+    // Load font as ArrayBuffer: fetch on http://, import base64 data on file://
+    async function loadFontBuffer(url) {
+      try {
+        return await fetch(url).then((r) => r.arrayBuffer());
+      } catch {
+        const { default: b64 } = await import("./" + url + ".b64.js");
+        const bin = atob(b64);
+        const buf = new Uint8Array(bin.length);
+        for (let i = 0; i < bin.length; i++) buf[i] = bin.charCodeAt(i);
+        return buf.buffer;
+      }
+    }
+
+    function getCharsetFromBuffer(buffer) {
+      const font = opentype.parse(buffer);
+      const cps = new Set();
+      for (let cp = 0x0020; cp <= 0xFFFD; cp++) {
+        if (cp >= 0xD800 && cp <= 0xDFFF) continue;
+        if (font.charToGlyphIndex(String.fromCodePoint(cp)) > 0) cps.add(cp);
+      }
+      return cps;
+    }
+
+    let _fontUrls = { old: "MartianGrotesk-old.ttf", new: "MartianGrotesk-new.ttf" };
+    let ALL_CODEPOINTS = [];
+    let ONLY_NEW = new Set();
+    let _refreshVer = 0;
+    const $charset = atom(0);
+
+    async function refreshCharsets() {
+      const ver = ++_refreshVer;
+
+      const [oldBuf, newBuf] = await Promise.all([
+        loadFontBuffer(_fontUrls.old),
+        loadFontBuffer(_fontUrls.new),
+      ]);
+      if (ver !== _refreshVer) return;
+
+      const oldCps = getCharsetFromBuffer(oldBuf);
+      const newCps = getCharsetFromBuffer(newBuf);
+
+      ALL_CODEPOINTS = [...new Set([...oldCps, ...newCps])].sort((a, b) => a - b);
+      ONLY_NEW = new Set(ALL_CODEPOINTS.filter((cp) => !oldCps.has(cp)));
+      const shared = ALL_CODEPOINTS.length - ONLY_NEW.size;
+
+      document.querySelector("[data-filter='all']").textContent = `All (${ALL_CODEPOINTS.length})`;
+      document.querySelector("[data-filter='both']").textContent = `Shared (${shared})`;
+      document.querySelector("[data-filter='new']").textContent = `New only (${ONLY_NEW.size})`;
+      document.querySelector(".stats .old-count").textContent = `Old: ${oldCps.size} glyphs`;
+      document.querySelector(".stats .new-count").textContent = `New: ${newCps.size} glyphs (+${ONLY_NEW.size})`;
+
+      $charset.set($charset.get() + 1);
+    }
+
+    await refreshCharsets();
+
+    const FONT_WIDTHS = [
+      { label: "Condensed", old: "Cn", new: "Condensed" },
+      { label: "Semi Condensed", old: "Nr", new: "SemiCondensed" },
+      { label: "Normal", old: "Std", new: "" },
+      { label: "Semi Expanded", old: "sWd", new: "SemiExpanded" },
+      { label: "Expanded", old: "Wd", new: "Expanded" },
+      { label: "Extra Expanded", old: "xWd", new: "ExtraExpanded" },
+      { label: "Ultra Expanded", old: "uWd", new: "UltraExpanded" },
+    ];
+
+    const FONT_WEIGHTS = [
+      { label: "Thin", old: "Th", new: "Thin" },
+      { label: "Extra Light", old: "xLt", new: "ExtraLight" },
+      { label: "Light", old: "Lt", new: "Light" },
+      { label: "Regular", old: "Rg", new: "Regular" },
+      { label: "Medium", old: "Md", new: "Medium" },
+      { label: "Bold", old: "Bd", new: "Bold" },
+      { label: "Extra Bold", old: "xBd", new: "ExtraBold" },
+      { label: "Black", old: "Bl", new: "Black" },
+      { label: "Ultra Black", old: "Ult", new: "UltraBlack" },
+    ];
+
+    // === Context ===
+
+    const slidersCtx = createContext("sliders");
+
+    // === State ===
+
+    const $fontSource = atom("variable");
+    const $staticWidthIdx = atom(2);
+    const $staticWeightIdx = atom(3);
+    const $weight = atom(400);
+    const $width = atom(100);
+    const $glyphSize = atom(32);
+    const $filter = atom("all");
+    const $view = atom("grid");
+    const $previewText = atom("");
+
+    const $fsOpen = atom(false);
+    const $fsCpIdx = atom(0);
+    const $fsWeight = atom(400);
+    const $fsWidth = atom(100);
+    const $fsGlyphSize = atom(500);
+    const $fsMode = atom("overlay");
+    const $fsOpacity = atom(50);
+    const $fsBBox = atom("off");
+
+    const $visibleCps = computed([$filter, $charset], (filter) =>
+      ALL_CODEPOINTS.filter((cp) => {
+        const isNew = ONLY_NEW.has(cp);
+        if (filter === "both" && isNew) return false;
+        if (filter === "new" && !isNew) return false;
+        return true;
+      })
+    );
+
+    // === Helpers ===
+
+    function getBlock(cp) {
+      for (const [lo, hi, name] of BLOCKS) {
+        if (cp >= lo && cp <= hi) return name;
+      }
+      return "Other";
+    }
+
+    function updateBBoxEl(bboxEl, charSpan) {
+      const parentRect = bboxEl.parentElement.getBoundingClientRect();
+      const charRect = charSpan.getBoundingClientRect();
+      bboxEl.style.left = (charRect.left - parentRect.left) + "px";
+      bboxEl.style.top = (charRect.top - parentRect.top) + "px";
+      bboxEl.style.width = charRect.width + "px";
+      bboxEl.style.height = charRect.height + "px";
+    }
+
+    function getStaticFontPaths(widthIdx, weightIdx) {
+      const w = FONT_WIDTHS[widthIdx];
+      const wt = FONT_WEIGHTS[weightIdx];
+      const oldFile = `old-ttf/MartianGrotesk-${w.old}${wt.old}.ttf`;
+      const newPrefix = w.new ? `MartianGrotesk${w.new}` : "MartianGrotesk";
+      const newWeight = (w.new === "SemiExpanded" && wt.new === "UltraBlack") ? "ExtraBlack" : wt.new;
+      const newFile = `new-ttf/${newPrefix}-${newWeight}.ttf`;
+      return { oldFile, newFile };
+    }
+
+    function setFontFaces(oldUrl, newUrl) {
+      _fontUrls = { old: oldUrl, new: newUrl };
+      document.getElementById("dynamicFonts").textContent =
+        `@font-face { font-family: "MartianOld"; src: url("${oldUrl}") format("truetype"); font-display: swap; }
+     @font-face { font-family: "MartianNew"; src: url("${newUrl}") format("truetype"); font-display: swap; }`;
+    }
+
+    function updateFontFaces() {
+      if ($fontSource.get() === "static") {
+        const { oldFile, newFile } = getStaticFontPaths($staticWidthIdx.get(), $staticWeightIdx.get());
+        setFontFaces(oldFile, newFile);
+      } else {
+        setFontFaces("MartianGrotesk-old.ttf", "MartianGrotesk-new.ttf");
+      }
+      refreshCharsets();
+    }
+
+    function populateSelect(el, items, selectedIdx) {
+      el.innerHTML = items.map((item, i) =>
+        `<option value="${i}"${i === selectedIdx ? " selected" : ""}>${item.label}</option>`
+      ).join("");
+    }
+
+    function groupByBlock(cps) {
+      const grouped = new Map();
+      for (const cp of cps) {
+        const block = getBlock(cp);
+        if (!grouped.has(block)) grouped.set(block, []);
+        grouped.get(block).push(cp);
+      }
+      return Array.from(grouped, ([name, cps]) => ({ name, cps }));
+    }
+
+    function updateCell(el, cp) {
+      const isNew = ONLY_NEW.has(cp);
+      const char = String.fromCodePoint(cp);
+      const hex = "U+" + cp.toString(16).toUpperCase().padStart(4, "0");
+
+      el.className = isNew ? "glyph-cell new-only" : "glyph-cell";
+      el.dataset.cp = String(cp);
+      el.querySelector(".glyph-cp").textContent = hex;
+
+      const oldR = el.querySelector(".glyph-render.old");
+      const newR = el.querySelector(".glyph-render.new");
+
+      oldR.textContent = isNew ? "" : char;
+      newR.textContent = char;
+    }
+
+    function attachToggle(ctx, container, $store, dataAttr) {
+      ctx.on(container, "click", (e) => {
+        const btn = e.target.closest("button");
+        const val = btn?.dataset[dataAttr];
+        if (val) $store.set(val);
+      });
+      ctx.effect($store, (val) => {
+        container.querySelectorAll("button").forEach((b) =>
+          b.classList.toggle("active", b.dataset[dataAttr] === val)
+        );
+      });
+    }
+
+    const SAMPLE_TEXTS = {
+      serbian: "Ђорђе љуби Њу Јорк. Џемпер, ћевапчићи и кајмак су најбољи на свету. Људи воле лепе ствари: књиге, цвеће и музику. Сваки четвртак увече, његова породица се окупља и ужива у топлој атмосфери.",
+      macedonian: "Ѓорѓи и Ќерстин зборуваат за ѕвездите. Јас сакам да читам книги за историјата на Македонија. Ќе одиме на излет во планината, каде што ѕидовите се стари и убави.",
+      ukrainian: "Єдиний ґрунтовний їжак із Закарпаття знайшов їжу біля ґанку. Ґвалт! Ці їхні ґудзики є справжніми? Які гарні ірисові квіти ростуть біля річки!",
+      belarusian: "Маўклівы дзяўчына ўбачыла маланку ў небе. Ён паехаў на аўтобусе ў Мінск, каб наведаць сваю бабулю. Ўвечары яны гулялі па старым горадзе.",
+      bulgarian: "Щастливецът проумя бъдещето. Жълтите дюли бяха вкусни за цялото семейство. Южният вятър донесе топлина от морето, а децата играеха на плажа с пясъка.",
+      mixed: "Ђорђе из Београда, Ѓорѓи из Скопја, та Єлена із Києва зустрілися ў Мінску.\n\nСрпски: Љубав, њежност и ћутање.\nМакедонски: Ѕвезди, ќерки и ѓаволи.\nУкраїнська: Ґанок, їжак, Єгипет.\nБеларуская: Маўклівасць і ўлада.\nБългарски: Щастие, южен вятър.",
+    };
+
+    // === Parent components (defined first to provide context) ===
+
+    define("comparison-app")
+      .withRefs((r) => ({
+        legend: r.one("div"),
+      }))
+      .setup((ctx) => {
+        slidersCtx.provide(ctx, { $weight, $width, $glyphSize });
+
+        ctx.effect($fontSource, () => updateFontFaces());
+        ctx.effect([$staticWidthIdx, $staticWeightIdx], () => {
+          if ($fontSource.get() === "static") updateFontFaces();
+        });
+
+        const grid = ctx.host.querySelector("glyph-grid");
+        const preview = ctx.host.querySelector("text-preview");
+
+        ctx.effect($view, (view) => {
+          const isGrid = view === "grid";
+          ctx.refs.legend.classList.toggle("hidden", !isGrid);
+          grid.classList.toggle("hidden", !isGrid);
+          preview.classList.toggle("hidden", isGrid);
+        });
+      });
+
+    define("fs-viewer")
+      .withRefs((r) => ({
+        overlay: r.one("div"),
+        title: r.one("div"),
+        closeBtn: r.one("button"),
+        modeToggle: r.one("div"),
+        opacityGroup: r.one("div"),
+        opacity: r.one("input"),
+        opacityVal: r.one("span"),
+        prevBtn: r.one("button"),
+        nextBtn: r.one("button"),
+        blockIndex: r.one("span"),
+        body: r.one("div"),
+        oldSide: r.one("div"),
+        glyphOld: r.one("div"),
+        glyphNew: r.one("div"),
+        charOld: r.one("span"),
+        charNew: r.one("span"),
+        bboxOld: r.one("div"),
+        bboxNew: r.one("div"),
+        bboxToggle: r.one("div"),
+        legend: r.one("div"),
+      }))
+      .setup((ctx) => {
+        const { refs } = ctx;
+
+        slidersCtx.provide(ctx, {
+          $weight: $fsWeight,
+          $width: $fsWidth,
+          $glyphSize: $fsGlyphSize,
+        });
+
+        function renderGlyph() {
+          const cps = $visibleCps.get();
+          const idx = $fsCpIdx.get();
+          const cp = cps[idx];
+          if (cp === undefined) return;
+
+          const isNew = ONLY_NEW.has(cp);
+          const char = String.fromCodePoint(cp);
+          const hex = "U+" + cp.toString(16).toUpperCase().padStart(4, "0");
+          const block = getBlock(cp);
+
+          let titleHtml = `${char} <span class="cp">${hex}</span><span class="block-name">${block}</span>`;
+          if (isNew) titleHtml += `<span class="new-badge">NEW</span>`;
+          refs.title.innerHTML = titleHtml;
+          refs.blockIndex.textContent = `${idx + 1} / ${cps.length}`;
+
+          const w = $fsWeight.get();
+          const wd = $fsWidth.get();
+          const vs = `"wght" ${w}, "wdth" ${wd}`;
+          const size = $fsGlyphSize.get() + "px";
+
+          refs.glyphOld.style.fontSize = size;
+          refs.glyphOld.style.fontVariationSettings = vs;
+          refs.glyphNew.style.fontSize = size;
+          refs.glyphNew.style.fontVariationSettings = vs;
+
+          const sizeNum = $fsGlyphSize.get();
+          if (isNew) {
+            refs.oldSide.classList.add("unavailable");
+            refs.charOld.textContent = "";
+            refs.bboxOld.style.display = "none";
+          } else {
+            refs.oldSide.classList.remove("unavailable");
+            refs.charOld.textContent = char;
+            updateBBoxEl(refs.bboxOld, refs.charOld);
+          }
+          refs.charNew.textContent = char;
+          updateBBoxEl(refs.bboxNew, refs.charNew);
+        }
+
+        function navigate(dir) {
+          const cps = $visibleCps.get();
+          $fsCpIdx.set(($fsCpIdx.get() + dir + cps.length) % cps.length);
+        }
+
+        // --- Events ---
+
+        ctx.on(refs.closeBtn, "click", () => $fsOpen.set(false));
+        ctx.on(refs.prevBtn, "click", () => navigate(-1));
+        ctx.on(refs.nextBtn, "click", () => navigate(1));
+
+        ctx.on(document, "keydown", (e) => {
+          if (!$fsOpen.get()) return;
+          if (e.key === "Escape") $fsOpen.set(false);
+          if (e.key === "ArrowLeft") { navigate(-1); e.preventDefault(); }
+          if (e.key === "ArrowRight") { navigate(1); e.preventDefault(); }
+        });
+
+        attachToggle(ctx, refs.modeToggle, $fsMode, "mode");
+        attachToggle(ctx, refs.bboxToggle, $fsBBox, "bbox");
+
+        ctx.bind($fsOpacity, refs.opacity);
+
+        // --- Effects ---
+
+        ctx.effect($fsOpen, (open) => {
+          refs.overlay.classList.toggle("open", open);
+          document.body.style.overflow = open ? "hidden" : "";
+          if (open) renderGlyph();
+        });
+
+        ctx.effect([$fsCpIdx, $fsWeight, $fsWidth, $fsGlyphSize], () => {
+          if ($fsOpen.get()) renderGlyph();
+        });
+
+        ctx.effect($charset, () => {
+          if ($fsOpen.get()) renderGlyph();
+        });
+
+        ctx.effect([$fontSource, $staticWidthIdx, $staticWeightIdx], () => {
+          if (!$fsOpen.get()) return;
+          document.fonts.ready.then(() => {
+            if ($fsOpen.get()) renderGlyph();
+          });
+        });
+
+        ctx.effect($fsBBox, (val) => {
+          refs.body.classList.toggle("show-bbox", val === "on");
+          if ($fsOpen.get()) renderGlyph();
+        });
+
+        ctx.effect($fsMode, (mode) => {
+          if (mode === "overlay") {
+            refs.body.classList.add("overlay-mode");
+            refs.legend.classList.add("visible");
+            refs.opacityGroup.style.display = "";
+          } else {
+            refs.body.classList.remove("overlay-mode");
+            refs.legend.classList.remove("visible");
+            refs.opacityGroup.style.display = "none";
+            refs.oldSide.style.opacity = "";
+          }
+        });
+
+        ctx.effect($fsOpacity, (v) => {
+          refs.opacityVal.textContent = v + "%";
+          refs.oldSide.style.opacity = String(v / 100);
+        });
+      });
+
+    // === Shared control components ===
+
+    define("source-toggle")
+      .withRefs((r) => ({
+        toggle: r.one("div"),
+      }))
+      .setup((ctx) => {
+        attachToggle(ctx, ctx.refs.toggle, $fontSource, "src");
+      });
+
+    define("var-controls")
+      .withContexts({ sliders: slidersCtx })
+      .withRefs((r) => ({
+        wghtVal: r.one("span"),
+        wght: r.one("input"),
+        wdthVal: r.one("span"),
+        wdth: r.one("input"),
+      }))
+      .setup((ctx) => {
+        const { $weight, $width } = ctx.contexts.sliders;
+        const { refs } = ctx;
+
+        ctx.bind($weight, refs.wght);
+        ctx.bind($width, refs.wdth);
+
+        ctx.effect($weight, (v) => { refs.wghtVal.textContent = String(v); });
+        ctx.effect($width, (v) => { refs.wdthVal.textContent = String(v); });
+
+        ctx.effect($fontSource, (src) => {
+          ctx.host.classList.toggle("hidden", src === "static");
+        });
+      });
+
+    define("static-controls")
+      .withRefs((r) => ({
+        width: r.one("select"),
+        weight: r.one("select"),
+      }))
+      .setup((ctx) => {
+        const { refs } = ctx;
+
+        populateSelect(refs.width, FONT_WIDTHS, 2);
+        populateSelect(refs.weight, FONT_WEIGHTS, 3);
+
+        ctx.bind($staticWidthIdx, refs.width);
+        ctx.bind($staticWeightIdx, refs.weight);
+
+        ctx.effect($fontSource, (src) => {
+          ctx.host.classList.toggle("hidden", src !== "static");
+        });
+      });
+
+    define("size-control")
+      .withProps((p) => ({
+        min: p.number(16),
+        max: p.number(72),
+        step: p.number(4),
+      }))
+      .withContexts({ sliders: slidersCtx })
+      .withRefs((r) => ({
+        down: r.one("button"),
+        up: r.one("button"),
+        val: r.one("span"),
+      }))
+      .setup((ctx) => {
+        const { $glyphSize } = ctx.contexts.sliders;
+        const min = ctx.props.$min.get();
+        const max = ctx.props.$max.get();
+        const step = ctx.props.$step.get();
+
+        ctx.on(ctx.refs.down, "click", () => $glyphSize.set(Math.max(min, $glyphSize.get() - step)));
+        ctx.on(ctx.refs.up, "click", () => $glyphSize.set(Math.min(max, $glyphSize.get() + step)));
+
+        ctx.effect($glyphSize, (v) => { ctx.refs.val.textContent = String(v); });
+      });
+
+    define("filter-control")
+      .withRefs((r) => ({
+        buttons: r.one("div"),
+      }))
+      .setup((ctx) => {
+        attachToggle(ctx, ctx.refs.buttons, $filter, "filter");
+      });
+
+    define("view-tabs")
+      .withRefs((r) => ({
+        tabs: r.one("div"),
+      }))
+      .setup((ctx) => {
+        attachToggle(ctx, ctx.refs.tabs, $view, "view");
+      });
+
+    define("text-preview")
+      .withContexts({ sliders: slidersCtx })
+      .withRefs((r) => ({
+        samples: r.one("select"),
+        input: r.one("textarea"),
+        oldPanel: r.one("div"),
+        newPanel: r.one("div"),
+      }))
+      .setup((ctx) => {
+        const { $weight, $width, $glyphSize } = ctx.contexts.sliders;
+        const { refs } = ctx;
+
+        ctx.bind($previewText, refs.input);
+
+        ctx.on(refs.samples, "change", () => {
+          const key = refs.samples.value;
+          if (key && SAMPLE_TEXTS[key]) $previewText.set(SAMPLE_TEXTS[key]);
+        });
+
+        function renderText(text) {
+          refs.oldPanel.textContent = text;
+          // Highlight new-only characters in the new panel
+          const html = Array.from(text).map((ch) => {
+            const cp = ch.codePointAt(0);
+            return ONLY_NEW.has(cp) ? `<span class="new-char">${ch}</span>` : ch;
+          }).join("");
+          refs.newPanel.innerHTML = html || "";
+        }
+
+        ctx.effect($previewText, renderText);
+
+        ctx.effect([$weight, $width], (w, wd) => {
+          ctx.host.style.setProperty("--vs", `"wght" ${w}, "wdth" ${wd}`);
+        });
+
+        ctx.effect($glyphSize, (v) => {
+          ctx.host.style.setProperty("--glyph-size", v + "px");
+        });
+      });
+
+    define("glyph-grid")
+      .withRefs((r) => ({
+        blockTpl: r.one("template"),
+        cellTpl: r.one("template"),
+        content: r.one("div"),
+      }))
+      .setup((ctx) => {
+        const { refs } = ctx;
+
+        ctx.on(refs.content, "click", (e) => {
+          const cell = e.target.closest(".glyph-cell");
+          if (!cell) return;
+          const cp = Number(cell.dataset.cp);
+          const idx = $visibleCps.get().indexOf(cp);
+          $fsCpIdx.set(idx >= 0 ? idx : 0);
+          $fsWeight.set($weight.get());
+          $fsWidth.set($width.get());
+          $fsOpen.set(true);
+        });
+
+        ctx.effect($visibleCps, (cps) => {
+          const blocks = groupByBlock(cps);
+          renderList(refs.content, refs.blockTpl, {
+            data: blocks,
+            key: (b) => b.name,
+            update: (el, block) => {
+              const newCount = block.cps.filter((c) => ONLY_NEW.has(c)).length;
+              const newLabel = newCount > 0 ? ` <span style="color:#6e6">(+${newCount} new)</span>` : "";
+              el.querySelector(".block-title").innerHTML =
+                `${block.name} <span class="count">${block.cps.length} glyphs${newLabel}</span>`;
+
+              renderList(el.querySelector(".glyph-grid"), refs.cellTpl, {
+                data: block.cps,
+                key: (cp) => cp,
+                update: (cellEl, cp) => updateCell(cellEl, cp),
+              });
+            },
+          });
+        });
+
+        ctx.effect([$weight, $width], (w, wd) => {
+          ctx.host.style.setProperty("--vs", `"wght" ${w}, "wdth" ${wd}`);
+        });
+
+        ctx.effect($glyphSize, (v) => {
+          ctx.host.style.setProperty("--glyph-size", v + "px");
+        });
+      });
+  </script>
+</body>
+
+</html>
