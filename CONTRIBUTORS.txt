@@ -10,3 +10,4 @@
 # Name <email address>
 
 Arthur Objartel <objartel2@gmail.com>
+Pavel Grinchenko <psdcoder@gmail.com>
