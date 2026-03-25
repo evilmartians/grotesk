@@ -1,0 +1,100 @@
+This repo contains two different sources:
+- Martian Grotesk.glyphs (designer file)
+- MartianGrotesk.glyphs (GF)
+
+The reason is that the Martian font is for sale on another platform, and the Martian Grotesk has to match it in terms of compatibility, and could not follow the GF specs (this mainly concerns the names of the masters and instances).
+
+For exporting the GF fonts, we need to remove "GF" in the file name and in the config.yaml
+
+
+** PROCESS **
+
+So here is the process to keep the two versions similar.
+
+1- The GF team member sets up the MartianGroteskGF.glyphs file, following the GF specs. He/she/they deactivates the useless and/or problematic for export parameters (deactivate them, do not delete them)
+2- He/she/they creates a copy of this file, which will be named MartianGrotesk.glyphs and will reactivate the author's settings and rename the masters according to his model.
+3- The author makes the changes for the update
+- He creates a copy, and following this guide, reactivates the settings according to the GF specs.
+4- The GF team member checks that everything is good, and re-exports the font.
+
+
+** INSTRUCTIONS **
+
+FONT INFOS /
+- Family Name: "Martian Grotesk" (no version number)
+- parameters:
+	· Remove The VersionString
+	· Check if the Copyright follows this pattern:
+	  Copyright 2020 The Martian Grotesk Project Authors (https://github.com/evilmartians/grotesk)
+	· Check if Variable Font Origin is set on Normal Regular (m01)
+	· Licence is:
+	  This Font Software is licensed under the SIL Open Font License, Version 1.1.
+	  This license is available with a FAQ at: https://openfontlicense.org
+	· Licence URL is: https://openfontlicense.org
+	· Don't forget to increase the version number
+
+MASTERS /
+Master names:
+	Cn Th -> Condensed Thin
+	Std Th -> Normal Thin
+	uWd Th -> UltraExpanded Thin
+	Cn Rg -> Condensed Regular
+	Std Rg -> Normal Regular
+	uWd Rg -> UltraExpanded Regular
+	Cn xBd -> Condensed ExtraBold
+	Std xBd -> Normal ExtraBold
+	uWd xBd -> UltraExpanded ExtraBold
+	Cn Ult -> Condensed UltraBlack
+	Std Ult -> Normal UltraBlack
+	uWd Ult -> UltraExpanded UltraBlack
+
+INSTANCES /
+	· Deactivate authors instances, activate GF instances
+	· Instance naming: {Width} {Weight} (omit "Normal" for default width 100%)
+	· Do NOT use "Rename Glyphs" — not supported by fontmake
+	· Bold (700) instances should have isBold=1 and linkStyle to the Regular (400) of same width
+
+FEATURES /
+	· Deactivate rlig (conditional dollar/cent substitution causes fontmake issues)
+	· Keep all other features (ccmp, subs, sinf, sups, numr, dnom, frac, ordn, case, calt, liga, locl)
+
+GLYPHSET /
+In the non-GF version, rlig feature + rename glyphs in instances is used.
+Fontmake doesn't support this, so in GF version, we use alternate layers.
+To move from one version to the other, this is the process:
+
+	· Uncheck export for dollar.bold and cent.bold
+	· Add bracket layers to dollar and cent glyphs for the bold alternate:
+	  condition: 150 < wght < 320, 3 < wdth < 7 (design-space coordinates)
+	  Copy the drawings from dollar.bold/cent.bold layers into these bracket layers
+
+
+** BUILD **
+
+From the repo root:
+
+	sources/build.sh
+
+This creates a venv (if needed), installs deps, and runs build.py.
+
+Use build.py instead of running `gftools builder config.yaml` directly.
+
+The Martian Grotesk source uses Glyphs 3 Smart Components (reusable glyph
+parts with built-in variation, e.g. _tail.Descender, _part.greater). glyphsLib,
+which fontmake uses to convert .glyphs files, does not fully support Smart
+Components — it fails on the "Group" piece property and on missing Smart
+Component masters for the UltraBlack weight.
+
+build.py works around this by:
+1. Loading MartianGrotesk.glyphs via glyphsLib
+2. Stripping the "Group" key from smartComponentValues (not a real axis)
+3. Patching glyphsLib to handle missing Smart Component masters gracefully
+4. Saving a temp copy (original file is never modified)
+5. Running gftools builder on the temp copy
+
+Smart component interpolation is preserved. Only the UltraBlack weight at
+Condensed and UltraExpanded widths falls back to regular component placement
+for a few smart parts (_tail.Descender, _part.greater, _part.stroke-ii-cy).
+
+If glyphsLib adds full Smart Component support in the future, build.py can
+be removed and `gftools builder config.yaml` used directly.

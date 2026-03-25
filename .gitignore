@@ -1,0 +1,21 @@
+*~
+venv
+myenv
+build.stamp
+proof
+sources/master_ufo
+node_modules
+package-lock.json
+package.json
+logs
+*.log
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
