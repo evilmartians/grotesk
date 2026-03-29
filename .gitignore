@@ -9,8 +9,6 @@ sources/instance_ufo/
 sources/.ninja_log
 sources/.ninja_deps
 node_modules
-package-lock.json
-package.json
 logs
 *.log
 

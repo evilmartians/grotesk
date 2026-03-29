@@ -1,0 +1,121 @@
+    .controls {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: #0a0a0a;
+      padding: 16px 0;
+      border-bottom: 1px solid #222;
+      margin-bottom: 24px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: end;
+    }
+
+    .control-group {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .control-group label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .control-group input[type="range"] {
+      width: 200px;
+      accent-color: #6e6;
+    }
+
+    .control-group .value {
+      font-size: 13px;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .source-toggle {
+      display: flex;
+      gap: 4px;
+    }
+
+    .source-toggle button {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .source-toggle button.active {
+      background: #222;
+      border-color: #555;
+      color: #fff;
+    }
+
+    .source-toggle button:hover {
+      border-color: #555;
+    }
+
+    .control-group select {
+      background: #111;
+      color: #ccc;
+      border: 1px solid #333;
+      border-radius: 4px;
+      padding: 3px 6px;
+      font-size: 12px;
+      cursor: pointer;
+    }
+
+    .control-group select:hover {
+      border-color: #555;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    .filter-buttons {
+      display: flex;
+      gap: 6px;
+    }
+
+    .filter-buttons button {
+      padding: 4px 12px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .filter-buttons button.active {
+      background: #222;
+      border-color: #555;
+      color: #fff;
+    }
+
+    .filter-buttons button:hover {
+      border-color: #555;
+    }
+
+    .stats {
+      font-size: 12px;
+      color: #666;
+      display: flex;
+      gap: 16px;
+      align-self: end;
+      padding-bottom: 2px;
+    }
+
+    .stats span {
+      white-space: nowrap;
+    }
+
+    .stats .new-count {
+      color: #6e6;
+    }

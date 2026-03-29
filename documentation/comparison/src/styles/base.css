@@ -1,0 +1,37 @@
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    comparison-app,
+    fs-viewer,
+    source-toggle,
+    var-controls,
+    static-controls,
+    size-control,
+    filter-control,
+    glyph-grid,
+    view-tabs,
+    text-preview {
+      display: contents;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      background: #0a0a0a;
+      color: #e0e0e0;
+      padding: 24px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: #888;
+      margin-bottom: 20px;
+    }
