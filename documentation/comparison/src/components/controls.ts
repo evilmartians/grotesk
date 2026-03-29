@@ -1,9 +1,12 @@
 import { define } from "nanotags";
 import { slidersCtx } from "../state/context";
 import {
+  $fontMode,
   $fontSource,
   $staticWidthIdx,
   $staticWeightIdx,
+  $wghtAxis,
+  $wdthAxis,
   $filter,
   $view,
   $showDiff,
@@ -18,6 +21,10 @@ define("source-toggle")
   }))
   .setup((ctx) => {
     attachToggle(ctx, ctx.refs.toggle, $fontSource, "src");
+
+    ctx.effect($fontMode, (mode) => {
+      ctx.host.classList.toggle("hidden", mode === "custom");
+    });
   });
 
 define("var-controls")
@@ -38,9 +45,34 @@ define("var-controls")
     ctx.effect($weight, (v) => { refs.wghtVal.textContent = String(v); });
     ctx.effect($width, (v) => { refs.wdthVal.textContent = String(v); });
 
-    ctx.effect($fontSource, (src) => {
-      ctx.host.classList.toggle("hidden", src === "static");
+    const wghtGroup = refs.wght.closest(".control-group") as HTMLElement;
+    const wdthGroup = refs.wdth.closest(".control-group") as HTMLElement;
+
+    ctx.effect($wghtAxis, (axis) => {
+      wghtGroup.classList.toggle("hidden", !axis);
+      if (axis) {
+        refs.wght.min = String(axis.min);
+        refs.wght.max = String(axis.max);
+      }
     });
+
+    ctx.effect($wdthAxis, (axis) => {
+      wdthGroup.classList.toggle("hidden", !axis);
+      if (axis) {
+        refs.wdth.min = String(axis.min);
+        refs.wdth.max = String(axis.max);
+      }
+    });
+
+    ctx.effect([$fontSource, $fontMode, $wghtAxis, $wdthAxis],
+      (src: unknown, mode: unknown, wght: unknown, wdth: unknown) => {
+        const noAxes = !wght && !wdth;
+        ctx.host.classList.toggle(
+          "hidden",
+          (src === "static" && mode === "preset") || (mode === "custom" && noAxes),
+        );
+      },
+    );
   });
 
 define("static-controls")
@@ -57,8 +89,8 @@ define("static-controls")
     ctx.bind($staticWidthIdx, refs.width);
     ctx.bind($staticWeightIdx, refs.weight);
 
-    ctx.effect($fontSource, (src) => {
-      ctx.host.classList.toggle("hidden", src !== "static");
+    ctx.effect([$fontSource, $fontMode], (src: unknown, mode: unknown) => {
+      ctx.host.classList.toggle("hidden", src !== "static" || mode === "custom");
     });
   });
 

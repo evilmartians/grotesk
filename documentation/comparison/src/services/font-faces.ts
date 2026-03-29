@@ -1,15 +1,18 @@
 import { FONT_WIDTHS, FONT_WEIGHTS } from "../data/font-variants";
-import { $fontSource, $staticWidthIdx, $staticWeightIdx } from "../state/atoms";
+import { $fontMode, $fontSource, $staticWidthIdx, $staticWeightIdx } from "../state/atoms";
 import { refreshCharsets } from "./charset";
+import { detectFontFormat } from "./font-loader";
 
 type FontUrls = { old: string; new: string };
 
 let _fontUrls: FontUrls = {
-  old: "MartianGrotesk-old.ttf",
-  new: "MartianGrotesk-new.ttf",
+  old: "/fonts/MartianGrotesk-old.ttf",
+  new: "/fonts/MartianGrotesk-new.ttf",
 };
 
 let _styleEl: HTMLStyleElement | null = null;
+let _oldBlobUrl: string | null = null;
+let _newBlobUrl: string | null = null;
 
 export function getFontUrls(): FontUrls {
   return _fontUrls;
@@ -22,9 +25,26 @@ export function setFontFaces(oldUrl: string, newUrl: string): void {
     _styleEl.id = "dynamicFonts";
     document.head.appendChild(_styleEl);
   }
+  const oldFmt = detectFontFormat(oldUrl);
+  const newFmt = detectFontFormat(newUrl);
   _styleEl.textContent =
-    `@font-face { font-family: "MartianOld"; src: url("/fonts/${oldUrl}") format("truetype"); font-display: swap; }
-     @font-face { font-family: "MartianNew"; src: url("/fonts/${newUrl}") format("truetype"); font-display: swap; }`;
+    `@font-face { font-family: "BaseFont"; src: url("${oldUrl}") format("${oldFmt}"); font-display: swap; }
+     @font-face { font-family: "CompareFont"; src: url("${newUrl}") format("${newFmt}"); font-display: swap; }`;
+}
+
+export function trackBlobUrl(slot: "old" | "new", url: string): void {
+  if (slot === "old") {
+    if (_oldBlobUrl) URL.revokeObjectURL(_oldBlobUrl);
+    _oldBlobUrl = url;
+  } else {
+    if (_newBlobUrl) URL.revokeObjectURL(_newBlobUrl);
+    _newBlobUrl = url;
+  }
+}
+
+export function revokeAllBlobUrls(): void {
+  if (_oldBlobUrl) { URL.revokeObjectURL(_oldBlobUrl); _oldBlobUrl = null; }
+  if (_newBlobUrl) { URL.revokeObjectURL(_newBlobUrl); _newBlobUrl = null; }
 }
 
 export function getStaticFontPaths(
@@ -44,14 +64,16 @@ export function getStaticFontPaths(
 }
 
 export function updateFontFaces(): void {
+  if ($fontMode.get() === "custom") return;
+
   if ($fontSource.get() === "static") {
     const { old: oldFile, new: newFile } = getStaticFontPaths(
       $staticWidthIdx.get(),
       $staticWeightIdx.get(),
     );
-    setFontFaces(oldFile, newFile);
+    setFontFaces("/fonts/" + oldFile, "/fonts/" + newFile);
   } else {
-    setFontFaces("MartianGrotesk-old.ttf", "MartianGrotesk-new.ttf");
+    setFontFaces("/fonts/MartianGrotesk-old.ttf", "/fonts/MartianGrotesk-new.ttf");
   }
   refreshCharsets(_fontUrls.old, _fontUrls.new);
 }
