@@ -6,6 +6,8 @@ import {
   $staticWeightIdx,
   $filter,
   $view,
+  $showDiff,
+  $diffThreshold,
 } from "../state/atoms";
 import { attachToggle, populateSelect } from "../helpers/dom";
 import { FONT_WIDTHS, FONT_WEIGHTS } from "../data/font-variants";
@@ -102,4 +104,26 @@ define("view-tabs")
   }))
   .setup((ctx) => {
     attachToggle(ctx, ctx.refs.tabs, $view, "view");
+  });
+
+define("diff-toggle")
+  .withRefs((r) => ({
+    btn: r.one("button"),
+    threshold: r.one("input"),
+    pctLabel: r.one("span"),
+  }))
+  .setup((ctx) => {
+    ctx.on(ctx.refs.btn, "click", () => $showDiff.set(!$showDiff.get()));
+    ctx.on(ctx.refs.threshold, "change", () => {
+      $diffThreshold.set(parseFloat(ctx.refs.threshold.value) || 0);
+      if ($showDiff.get()) {
+        $showDiff.set(false);
+        $showDiff.set(true);
+      }
+    });
+    ctx.effect($showDiff, (on) => {
+      ctx.refs.btn.classList.toggle("active", on);
+      ctx.refs.threshold.style.display = on ? "" : "none";
+      ctx.refs.pctLabel.style.display = on ? "" : "none";
+    });
   });

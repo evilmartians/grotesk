@@ -17,8 +17,11 @@ export const $fsWidth = atom(100);
 export const $fsGlyphSize = atom(500);
 export const $fsMode = atom<"side" | "overlay">("overlay");
 export const $fsOpacity = atom(50);
-export const $fsBBox = atom<"off" | "on">("off");
+export const $fsBBox = atom<"off" | "on">("on");
 export const $charset = atom(0);
+export const $showDiff = atom(false);
+export const $diffThreshold = atom(1);
+export const $diffVersion = atom(0);
 
 export const $visibleCps = computed([$filter, $charset], (filter) => {
   const all = getAllCodepoints();

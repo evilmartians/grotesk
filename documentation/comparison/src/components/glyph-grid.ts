@@ -9,8 +9,12 @@ import {
   $weight,
   $width,
   $glyphSize,
+  $showDiff,
+  $diffVersion,
+  $charset,
 } from "../state/atoms";
 import { getOnlyNew } from "../services/charset";
+import { computeDiffs, clearDiffs, getDiffCps } from "../services/diff-detector";
 import { groupByBlock, updateCell } from "../helpers/unicode";
 
 define("glyph-grid")
@@ -34,13 +38,13 @@ define("glyph-grid")
     });
 
     ctx.effect($visibleCps, (cps) => {
-      const ONLY_NEW = getOnlyNew();
+      const onlyNew = getOnlyNew();
       const blocks = groupByBlock(cps);
       renderList(refs.content, refs.blockTpl, {
         data: blocks,
         key: (b) => b.name,
         update: (el, block) => {
-          const newCount = block.cps.filter((c) => ONLY_NEW.has(c)).length;
+          const newCount = block.cps.filter((c) => onlyNew.has(c)).length;
           const newLabel =
             newCount > 0
               ? ` <span style="color:#6e6">(+${newCount} new)</span>`
@@ -57,7 +61,28 @@ define("glyph-grid")
       });
     });
 
-    ctx.effect([$weight, $width], (w, wd) => {
+    // When diff results arrive, update cell classes directly (no full re-render)
+    ctx.effect($diffVersion, () => {
+      const showDiff = $showDiff.get();
+      const diffCps = getDiffCps();
+      const onlyNew = getOnlyNew();
+      refs.content.querySelectorAll<HTMLElement>(".glyph-cell").forEach((cell) => {
+        const cp = Number(cell.dataset.cp);
+        const isNew = onlyNew.has(cp);
+        const isDiff = !isNew && showDiff && diffCps.has(cp);
+        cell.classList.toggle("diff", isDiff);
+      });
+    });
+
+    ctx.effect([$showDiff, $charset], () => {
+      if (!$showDiff.get()) { clearDiffs(); return; }
+      const cps = $visibleCps.get();
+      const onlyNew = getOnlyNew();
+      const shared = new Set(cps.filter((cp: number) => !onlyNew.has(cp)));
+      computeDiffs(shared);
+    });
+
+    ctx.effect([$weight, $width], (w: unknown, wd: unknown) => {
       ctx.host.style.setProperty("--vs", `"wght" ${w}, "wdth" ${wd}`);
     });
 
