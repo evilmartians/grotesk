@@ -46,7 +46,8 @@
     }
 
     .glyph-cell.diff {
-      border-color: #664400;
+      border-color: #b87a00;
+      background: #1a1400;
     }
 
     .glyph-cp {
@@ -144,6 +145,11 @@
 
     .legend-swatch.new-only {
       border-color: #264026;
+      background: #111;
+    }
+
+    .legend-swatch.diff {
+      border-color: #664400;
       background: #111;
     }
 

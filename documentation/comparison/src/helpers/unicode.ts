@@ -1,5 +1,7 @@
 import { BLOCKS } from "../data/blocks";
 import { getOnlyNew } from "../services/charset";
+import { getDiffCps } from "../services/diff-detector";
+import { $showDiff } from "../state/atoms";
 
 export function getBlock(cp: number): string {
   for (const [lo, hi, name] of BLOCKS) {
@@ -29,7 +31,11 @@ export function updateCell(el: Element, cp: number): void {
   const char = String.fromCodePoint(cp);
   const hex = "U+" + cp.toString(16).toUpperCase().padStart(4, "0");
 
-  (el as HTMLElement).className = isNew ? "glyph-cell new-only" : "glyph-cell";
+  const isDiff = !isNew && $showDiff.get() && getDiffCps().has(cp);
+  let cls = "glyph-cell";
+  if (isNew) cls += " new-only";
+  else if (isDiff) cls += " diff";
+  (el as HTMLElement).className = cls;
   (el as HTMLElement).dataset.cp = String(cp);
   el.querySelector(".glyph-cp")!.textContent = hex;
 
