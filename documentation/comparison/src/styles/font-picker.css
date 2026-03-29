@@ -1,0 +1,69 @@
+    .font-picker {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 16px;
+      align-items: end;
+      padding: 12px 0;
+      margin-bottom: 8px;
+      border-bottom: 1px solid #222;
+    }
+
+    .font-slot {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .font-slot-label {
+      font-size: 11px;
+      color: #888;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .font-slot-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .font-slot-row .upload-btn {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .font-slot-row .upload-btn:hover {
+      border-color: #555;
+      color: #fff;
+    }
+
+    .file-name {
+      font-size: 12px;
+      color: #666;
+      max-width: 180px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .reset-btn {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid #664400;
+      background: transparent;
+      color: #b87a00;
+      border-radius: 4px;
+      cursor: pointer;
+      align-self: end;
+    }
+
+    .reset-btn:hover {
+      border-color: #996600;
+      color: #dda000;
+    }

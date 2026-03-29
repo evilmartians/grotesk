@@ -1,6 +1,10 @@
 import { atom, computed } from "nanostores";
 import { getAllCodepoints, getOnlyNew } from "../services/charset";
 
+export type AxisRange = { min: number; max: number; default: number };
+export const $fontMode = atom<"preset" | "custom">("preset");
+export const $wghtAxis = atom<AxisRange | null>({ min: 100, max: 1000, default: 400 });
+export const $wdthAxis = atom<AxisRange | null>({ min: 75, max: 200, default: 100 });
 export const $fontSource = atom<"variable" | "static">("variable");
 export const $staticWidthIdx = atom(2);
 export const $staticWeightIdx = atom(3);

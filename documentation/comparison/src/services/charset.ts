@@ -13,18 +13,7 @@ export function getOnlyNew(): ReadonlySet<number> {
   return _onlyNew;
 }
 
-export async function refreshCharsets(
-  oldUrl: string,
-  newUrl: string,
-): Promise<void> {
-  const ver = ++_refreshVer;
-
-  const [oldBuf, newBuf] = await Promise.all([
-    loadFontBuffer(oldUrl),
-    loadFontBuffer(newUrl),
-  ]);
-  if (ver !== _refreshVer) return;
-
+function applyCharsets(oldBuf: ArrayBuffer, newBuf: ArrayBuffer): void {
   const oldCps = getCharsetFromBuffer(oldBuf);
   const newCps = getCharsetFromBuffer(newBuf);
 
@@ -37,11 +26,34 @@ export async function refreshCharsets(
   document.querySelector("[data-filter='both']")!.textContent =
     `Shared (${shared})`;
   document.querySelector("[data-filter='new']")!.textContent =
-    `New only (${_onlyNew.size})`;
+    `Diff only (${_onlyNew.size})`;
   document.querySelector(".stats .old-count")!.textContent =
-    `Old: ${oldCps.size} glyphs`;
+    `Base: ${oldCps.size} glyphs`;
   document.querySelector(".stats .new-count")!.textContent =
-    `New: ${newCps.size} glyphs (+${_onlyNew.size})`;
+    `Compare: ${newCps.size} glyphs (+${_onlyNew.size} diff)`;
 
   $charset.set($charset.get() + 1);
+}
+
+export async function refreshCharsets(
+  oldUrl: string,
+  newUrl: string,
+): Promise<void> {
+  const ver = ++_refreshVer;
+
+  const [oldBuf, newBuf] = await Promise.all([
+    loadFontBuffer(oldUrl),
+    loadFontBuffer(newUrl),
+  ]);
+  if (ver !== _refreshVer) return;
+
+  applyCharsets(oldBuf, newBuf);
+}
+
+export function refreshCharsetsFromBuffers(
+  oldBuf: ArrayBuffer,
+  newBuf: ArrayBuffer,
+): void {
+  ++_refreshVer;
+  applyCharsets(oldBuf, newBuf);
 }
