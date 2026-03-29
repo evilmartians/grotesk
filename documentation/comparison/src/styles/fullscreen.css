@@ -1,0 +1,287 @@
+    .fullscreen-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: #0a0a0a;
+      padding: 24px;
+    }
+
+    .fullscreen-overlay.open {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .fs-header {
+      flex-shrink: 0;
+      padding-bottom: 16px;
+      border-bottom: 1px solid #222;
+    }
+
+    .fs-top-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 12px;
+    }
+
+    .fs-title {
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .fs-title .cp {
+      color: #888;
+      font-family: monospace;
+      font-size: 14px;
+      margin-left: 8px;
+    }
+
+    .fs-title .block-name {
+      color: #555;
+      font-size: 13px;
+      font-weight: 400;
+      margin-left: 12px;
+    }
+
+    .fs-title .new-badge {
+      font-size: 10px;
+      font-weight: 600;
+      color: #6e6;
+      border: 1px solid #264026;
+      border-radius: 3px;
+      padding: 1px 6px;
+      margin-left: 8px;
+      vertical-align: middle;
+    }
+
+    .fs-close {
+      width: 32px;
+      height: 32px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .fs-close:hover {
+      border-color: #555;
+      color: #fff;
+    }
+
+    .fs-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 20px;
+      align-items: end;
+    }
+
+    .fs-nav {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .fs-nav button {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .fs-nav button:hover {
+      border-color: #555;
+      color: #fff;
+    }
+
+    .fs-nav span {
+      font-size: 11px;
+      color: #555;
+    }
+
+    .fs-body {
+      flex: 1;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 24px;
+      min-height: 0;
+      padding-top: 24px;
+    }
+
+    .fs-side {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: #111;
+      border-radius: 8px;
+      border: 1px solid #1a1a1a;
+      position: relative;
+    }
+
+    .fs-side-label {
+      position: absolute;
+      top: 12px;
+      left: 16px;
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #444;
+    }
+
+    .fs-glyph {
+      font-size: 200px;
+      line-height: 1;
+      position: relative;
+      overflow: visible;
+    }
+
+    .fs-bbox {
+      position: absolute;
+      border: 1.5px dashed rgba(255, 200, 0, 0.6);
+      pointer-events: none;
+      box-sizing: border-box;
+      display: none;
+    }
+
+    .fs-body.show-bbox .fs-bbox {
+      display: block;
+    }
+
+    .fs-body.overlay-mode .fs-side.old .fs-bbox {
+      border-color: rgba(238, 68, 68, 0.7);
+    }
+
+    .fs-body.overlay-mode .fs-side.new .fs-bbox {
+      border-color: rgba(68, 136, 255, 0.7);
+    }
+
+    .fs-side.old .fs-glyph {
+      font-family: "MartianOld", sans-serif;
+    }
+
+    .fs-side.new .fs-glyph {
+      font-family: "MartianNew", sans-serif;
+    }
+
+    .fs-side.old.unavailable .fs-glyph {
+      display: none;
+    }
+
+    .fs-side.old.unavailable::after {
+      content: "not in old font";
+      font-size: 14px;
+      color: #333;
+      font-family: system-ui, sans-serif;
+    }
+
+    .fs-body.overlay-mode {
+      grid-template-columns: 1fr;
+    }
+
+    .fs-body.overlay-mode .fs-side {
+      grid-row: 1;
+      grid-column: 1;
+    }
+
+    .fs-body.overlay-mode .fs-side.old {
+      background: transparent;
+      border-color: transparent;
+      z-index: 2;
+      mix-blend-mode: screen;
+    }
+
+    .fs-body.overlay-mode .fs-side.old .fs-glyph {
+      color: #e44;
+    }
+
+    .fs-body.overlay-mode .fs-side.old .fs-side-label {
+      color: #e44;
+    }
+
+    .fs-body.overlay-mode .fs-side.new {
+      z-index: 1;
+    }
+
+    .fs-body.overlay-mode .fs-side.new .fs-glyph {
+      color: #48f;
+    }
+
+    .fs-body.overlay-mode .fs-side.new .fs-side-label {
+      color: #48f;
+    }
+
+    .fs-mode-toggle {
+      display: flex;
+      gap: 4px;
+    }
+
+    .fs-mode-toggle button {
+      padding: 4px 10px;
+      font-size: 12px;
+      border: 1px solid #333;
+      background: transparent;
+      color: #ccc;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .fs-mode-toggle button.active {
+      background: #222;
+      border-color: #555;
+      color: #fff;
+    }
+
+    .fs-mode-toggle button:hover {
+      border-color: #555;
+    }
+
+    .overlay-legend {
+      display: none;
+      position: absolute;
+      bottom: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      font-size: 12px;
+      color: #666;
+      gap: 16px;
+      z-index: 10;
+    }
+
+    .fs-body.overlay-mode~.overlay-legend,
+    .overlay-legend.visible {
+      display: flex;
+    }
+
+    .overlay-legend .ol-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .overlay-legend .ol-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+    }
+
+    .overlay-legend .ol-swatch.old-color {
+      background: #e44;
+    }
+
+    .overlay-legend .ol-swatch.new-color {
+      background: #48f;
+    }
+
+    .overlay-legend .ol-swatch.match-color {
+      background: #c4f;
+    }

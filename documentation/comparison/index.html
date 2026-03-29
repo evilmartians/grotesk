@@ -1,0 +1,242 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Martian Grotesk: Old vs GF Build Comparison</title>
+</head>
+
+<body>
+
+  <comparison-app>
+    <h1>Martian Grotesk: Designer vs GF Build</h1>
+    <p class="subtitle">Side-by-side glyph comparison. Left = old (designer), Right = new (GF build).</p>
+
+    <div class="controls">
+      <source-toggle>
+        <div class="control-group">
+          <label>Font source</label>
+          <div class="source-toggle" data-ref="toggle">
+            <button class="active" data-src="variable">Variable</button>
+            <button data-src="static">Static</button>
+          </div>
+        </div>
+      </source-toggle>
+      <var-controls>
+        <div class="control-group">
+          <label>Weight <span class="value" data-ref="wghtVal">400</span></label>
+          <input type="range" data-ref="wght" min="100" max="1000" value="400" step="1">
+        </div>
+        <div class="control-group">
+          <label>Width <span class="value" data-ref="wdthVal">100</span></label>
+          <input type="range" data-ref="wdth" min="75" max="200" value="100" step="1">
+        </div>
+      </var-controls>
+      <static-controls class="hidden">
+        <div class="control-group">
+          <label>Width</label>
+          <select data-ref="width"></select>
+        </div>
+        <div class="control-group">
+          <label>Weight</label>
+          <select data-ref="weight"></select>
+        </div>
+      </static-controls>
+      <size-control min="16" max="72" step="4">
+        <div class="control-group">
+          <label>Glyph size</label>
+          <div class="font-size-control">
+            <button data-ref="down">-</button>
+            <span class="value" data-ref="val">32</span>
+            <button data-ref="up">+</button>
+          </div>
+        </div>
+      </size-control>
+      <filter-control>
+        <div class="control-group">
+          <label>Filter</label>
+          <div class="filter-buttons" data-ref="buttons">
+            <button class="active" data-filter="all">All</button>
+            <button data-filter="both">Shared</button>
+            <button data-filter="new">New only</button>
+          </div>
+        </div>
+      </filter-control>
+      <div class="stats">
+        <span class="old-count"></span>
+        <span class="new-count"></span>
+      </div>
+    </div>
+
+    <view-tabs>
+      <div class="view-tabs" data-ref="tabs">
+        <button class="active" data-view="grid">Grid</button>
+        <button data-view="text">Text Preview</button>
+      </div>
+    </view-tabs>
+
+    <div class="legend" data-ref="legend">
+      <div class="legend-item">
+        <div class="legend-swatch both"></div> In both fonts
+      </div>
+      <div class="legend-item">
+        <div class="legend-swatch new-only"></div> New in GF build
+      </div>
+    </div>
+
+    <glyph-grid>
+      <template data-ref="blockTpl">
+        <div class="block-section">
+          <div class="block-title"></div>
+          <div class="glyph-grid"></div>
+        </div>
+      </template>
+
+      <template data-ref="cellTpl">
+        <div class="glyph-cell">
+          <div class="glyph-cp"></div>
+          <div class="glyph-pair">
+            <div class="glyph-render old"></div>
+            <div class="glyph-render new"></div>
+          </div>
+          <div class="pair-labels"><span>old</span><span>new</span></div>
+        </div>
+      </template>
+
+      <div data-ref="content"></div>
+    </glyph-grid>
+
+    <text-preview class="hidden">
+      <div class="text-preview">
+        <div class="text-preview-controls">
+          <select data-ref="samples">
+            <option value="">Custom text...</option>
+            <option value="serbian">Serbian</option>
+            <option value="macedonian">Macedonian</option>
+            <option value="ukrainian">Ukrainian</option>
+            <option value="belarusian">Belarusian</option>
+            <option value="bulgarian">Bulgarian</option>
+            <option value="mixed">Mixed showcase</option>
+          </select>
+        </div>
+        <textarea data-ref="input" rows="4"
+          placeholder="Type or paste text here to preview in both fonts..."></textarea>
+        <div class="text-preview-panels">
+          <div class="text-panel">
+            <div class="text-panel-label">Old (designer)</div>
+            <div class="text-panel-content old" data-ref="oldPanel"></div>
+          </div>
+          <div class="text-panel">
+            <div class="text-panel-label">New (GF build)</div>
+            <div class="text-panel-content new" data-ref="newPanel"></div>
+          </div>
+        </div>
+      </div>
+    </text-preview>
+  </comparison-app>
+
+  <fs-viewer>
+    <div class="fullscreen-overlay" data-ref="overlay">
+      <div class="fs-header">
+        <div class="fs-top-row">
+          <div class="fs-title" data-ref="title"></div>
+          <button class="fs-close" data-ref="closeBtn" title="Close (Esc)">&times;</button>
+        </div>
+        <div class="fs-controls">
+          <source-toggle>
+            <div class="control-group">
+              <label>Font source</label>
+              <div class="source-toggle" data-ref="toggle">
+                <button class="active" data-src="variable">Variable</button>
+                <button data-src="static">Static</button>
+              </div>
+            </div>
+          </source-toggle>
+          <var-controls>
+            <div class="control-group">
+              <label>Weight <span class="value" data-ref="wghtVal">400</span></label>
+              <input type="range" data-ref="wght" min="100" max="1000" value="400" step="1">
+            </div>
+            <div class="control-group">
+              <label>Width <span class="value" data-ref="wdthVal">100</span></label>
+              <input type="range" data-ref="wdth" min="75" max="200" value="100" step="1">
+            </div>
+          </var-controls>
+          <static-controls class="hidden">
+            <div class="control-group">
+              <label>Width</label>
+              <select data-ref="width"></select>
+            </div>
+            <div class="control-group">
+              <label>Weight</label>
+              <select data-ref="weight"></select>
+            </div>
+          </static-controls>
+          <size-control min="48" max="600" step="32">
+            <div class="control-group">
+              <label>Glyph size</label>
+              <div class="font-size-control">
+                <button data-ref="down">-</button>
+                <span class="value" data-ref="val">500</span>
+                <button data-ref="up">+</button>
+              </div>
+            </div>
+          </size-control>
+          <div class="control-group">
+            <label>Mode</label>
+            <div class="fs-mode-toggle" data-ref="modeToggle">
+              <button data-mode="side">Side by side</button>
+              <button class="active" data-mode="overlay">Overlay</button>
+            </div>
+          </div>
+          <div class="control-group">
+            <label>Bbox</label>
+            <div class="fs-mode-toggle" data-ref="bboxToggle">
+              <button data-bbox="off" class="active">Off</button>
+              <button data-bbox="on">On</button>
+            </div>
+          </div>
+          <div class="control-group" data-ref="opacityGroup">
+            <label>Old layer opacity <span class="value" data-ref="opacityVal">50%</span></label>
+            <input type="range" data-ref="opacity" min="0" max="100" value="50" step="1">
+          </div>
+          <div class="fs-nav">
+            <button data-ref="prevBtn" title="Previous glyph (Left arrow)">&larr; Prev</button>
+            <span data-ref="blockIndex"></span>
+            <button data-ref="nextBtn" title="Next glyph (Right arrow)">Next &rarr;</button>
+          </div>
+        </div>
+      </div>
+      <div class="fs-body overlay-mode" data-ref="body">
+        <div class="fs-side old" data-ref="oldSide" style="opacity:0.5">
+          <div class="fs-side-label">Old (designer)</div>
+          <div class="fs-glyph" data-ref="glyphOld"><span data-ref="charOld"></span>
+            <div class="fs-bbox" data-ref="bboxOld"></div>
+          </div>
+        </div>
+        <div class="fs-side new">
+          <div class="fs-side-label">New (GF build)</div>
+          <div class="fs-glyph" data-ref="glyphNew"><span data-ref="charNew"></span>
+            <div class="fs-bbox" data-ref="bboxNew"></div>
+          </div>
+        </div>
+      </div>
+      <div class="overlay-legend visible" data-ref="legend">
+        <div class="ol-item">
+          <div class="ol-swatch old-color"></div> Old only (red)
+        </div>
+        <div class="ol-item">
+          <div class="ol-swatch new-color"></div> New only (blue)
+        </div>
+        <div class="ol-item">
+          <div class="ol-swatch match-color"></div> Overlap (pink/white)
+        </div>
+      </div>
+    </div>
+  </fs-viewer>
+
+  <script type="module" src="/src/main.ts"></script>
+</body>
+
+</html>
