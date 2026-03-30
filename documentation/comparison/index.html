@@ -4,36 +4,14 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Font Comparison Tool</title>
+  <title>Martian Grotesk: Old vs GF Build Comparison</title>
 </head>
 
 <body>
 
   <comparison-app>
-    <h1>Font Comparison Tool</h1>
-    <p class="subtitle">Side-by-side glyph comparison. Left = base font, Right = comparison font.</p>
-
-    <font-picker>
-      <div class="font-picker">
-        <div class="font-slot">
-          <span class="font-slot-label">Base font</span>
-          <div class="font-slot-row">
-            <button class="upload-btn" data-ref="oldBtn">Choose file...</button>
-            <input type="file" accept=".ttf,.otf,.woff,.woff2" data-ref="oldInput" hidden>
-            <span class="file-name" data-ref="oldName">MartianGrotesk-old.ttf</span>
-          </div>
-        </div>
-        <div class="font-slot">
-          <span class="font-slot-label">Comparison font</span>
-          <div class="font-slot-row">
-            <button class="upload-btn" data-ref="newBtn">Choose file...</button>
-            <input type="file" accept=".ttf,.otf,.woff,.woff2" data-ref="newInput" hidden>
-            <span class="file-name" data-ref="newName">MartianGrotesk-new.ttf</span>
-          </div>
-        </div>
-        <button class="reset-btn hidden" data-ref="resetBtn">Reset to preset</button>
-      </div>
-    </font-picker>
+    <h1>Martian Grotesk: Designer vs GF Build</h1>
+    <p class="subtitle">Side-by-side glyph comparison. Left = old (designer), Right = new (GF build).</p>
 
     <div class="controls">
       <source-toggle>
@@ -48,11 +26,11 @@
       <var-controls>
         <div class="control-group">
           <label>Weight <span class="value" data-ref="wghtVal">400</span></label>
-          <input type="range" data-ref="wght" min="100" max="1000" value="400" step="50">
+          <input type="range" data-ref="wght" min="100" max="1000" value="400" step="1">
         </div>
         <div class="control-group">
           <label>Width <span class="value" data-ref="wdthVal">100</span></label>
-          <input type="range" data-ref="wdth" min="75" max="200" value="100" step="5">
+          <input type="range" data-ref="wdth" min="75" max="200" value="100" step="1">
         </div>
       </var-controls>
       <static-controls class="hidden">
@@ -81,7 +59,7 @@
           <div class="filter-buttons" data-ref="buttons">
             <button class="active" data-filter="all">All</button>
             <button data-filter="both">Shared</button>
-            <button data-filter="new">Diff only</button>
+            <button data-filter="new">New only</button>
           </div>
         </div>
       </filter-control>
@@ -115,7 +93,7 @@
         <div class="legend-swatch both"></div> In both fonts
       </div>
       <div class="legend-item">
-        <div class="legend-swatch new-only"></div> Only in comparison font
+        <div class="legend-swatch new-only"></div> New in GF build
       </div>
       <div class="legend-item">
         <div class="legend-swatch diff"></div> Visual diff
@@ -137,7 +115,7 @@
             <div class="glyph-render old"></div>
             <div class="glyph-render new"></div>
           </div>
-          <div class="pair-labels"><span>base</span><span>comp</span></div>
+          <div class="pair-labels"><span>old</span><span>new</span></div>
         </div>
       </template>
 
@@ -161,11 +139,11 @@
           placeholder="Type or paste text here to preview in both fonts..."></textarea>
         <div class="text-preview-panels">
           <div class="text-panel">
-            <div class="text-panel-label">Base font</div>
+            <div class="text-panel-label">Old (designer)</div>
             <div class="text-panel-content old" data-ref="oldPanel"></div>
           </div>
           <div class="text-panel">
-            <div class="text-panel-label">Comparison font</div>
+            <div class="text-panel-label">New (GF build)</div>
             <div class="text-panel-content new" data-ref="newPanel"></div>
           </div>
         </div>
@@ -193,11 +171,11 @@
           <var-controls>
             <div class="control-group">
               <label>Weight <span class="value" data-ref="wghtVal">400</span></label>
-              <input type="range" data-ref="wght" min="100" max="1000" value="400" step="50">
+              <input type="range" data-ref="wght" min="100" max="1000" value="400" step="1">
             </div>
             <div class="control-group">
               <label>Width <span class="value" data-ref="wdthVal">100</span></label>
-              <input type="range" data-ref="wdth" min="75" max="200" value="100" step="5">
+              <input type="range" data-ref="wdth" min="75" max="200" value="100" step="1">
             </div>
           </var-controls>
           <static-controls class="hidden">
@@ -247,13 +225,13 @@
       </div>
       <div class="fs-body overlay-mode show-bbox" data-ref="body">
         <div class="fs-side old" data-ref="oldSide" style="opacity:0.5">
-          <div class="fs-side-label">Base font</div>
+          <div class="fs-side-label">Old (designer)</div>
           <div class="fs-glyph" data-ref="glyphOld"><span data-ref="charOld"></span>
             <div class="fs-bbox" data-ref="bboxOld"></div>
           </div>
         </div>
         <div class="fs-side new">
-          <div class="fs-side-label">Comparison font</div>
+          <div class="fs-side-label">New (GF build)</div>
           <div class="fs-glyph" data-ref="glyphNew"><span data-ref="charNew"></span>
             <div class="fs-bbox" data-ref="bboxNew"></div>
           </div>
@@ -261,10 +239,10 @@
       </div>
       <div class="overlay-legend visible" data-ref="legend">
         <div class="ol-item">
-          <div class="ol-swatch old-color"></div> Base only (red)
+          <div class="ol-swatch old-color"></div> Old only (red)
         </div>
         <div class="ol-item">
-          <div class="ol-swatch new-color"></div> Compare only (blue)
+          <div class="ol-swatch new-color"></div> New only (blue)
         </div>
         <div class="ol-item">
           <div class="ol-swatch match-color"></div> Overlap (pink/white)

@@ -166,11 +166,11 @@
     }
 
     .fs-side.old .fs-glyph {
-      font-family: "BaseFont", sans-serif;
+      font-family: "MartianOld", sans-serif;
     }
 
     .fs-side.new .fs-glyph {
-      font-family: "CompareFont", sans-serif;
+      font-family: "MartianNew", sans-serif;
     }
 
     .fs-side.old.unavailable .fs-glyph {
@@ -178,7 +178,7 @@
     }
 
     .fs-side.old.unavailable::after {
-      content: "not in base font";
+      content: "not in old font";
       font-size: 14px;
       color: #333;
       font-family: system-ui, sans-serif;

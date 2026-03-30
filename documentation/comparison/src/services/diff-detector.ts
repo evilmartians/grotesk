@@ -63,10 +63,10 @@ export async function computeDiffs(
   const diffs = new Set<number>();
   const threshold = $diffThreshold.get();
 
-  const oldMeasure = `${MEASURE_SIZE}px "BaseFont"`;
-  const newMeasure = `${MEASURE_SIZE}px "CompareFont"`;
-  const oldRender = `${FONT_PX}px "BaseFont"`;
-  const newRender = `${FONT_PX}px "CompareFont"`;
+  const oldMeasure = `${MEASURE_SIZE}px "MartianOld"`;
+  const newMeasure = `${MEASURE_SIZE}px "MartianNew"`;
+  const oldRender = `${FONT_PX}px "MartianOld"`;
+  const newRender = `${FONT_PX}px "MartianNew"`;
 
   await document.fonts.ready;
   if (id !== _runId) return;

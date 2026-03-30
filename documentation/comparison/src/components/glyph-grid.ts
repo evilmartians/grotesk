@@ -47,7 +47,7 @@ define("glyph-grid")
           const newCount = block.cps.filter((c) => onlyNew.has(c)).length;
           const newLabel =
             newCount > 0
-              ? ` <span style="color:#6e6">(+${newCount} diff)</span>`
+              ? ` <span style="color:#6e6">(+${newCount} new)</span>`
               : "";
           el.querySelector(".block-title")!.innerHTML =
             `${block.name} <span class="count">${block.cps.length} glyphs${newLabel}</span>`;

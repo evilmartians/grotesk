@@ -83,12 +83,12 @@
     }
 
     .glyph-render.old {
-      font-family: "BaseFont", sans-serif;
+      font-family: "MartianOld", sans-serif;
       background: #0d0d0d;
     }
 
     .glyph-render.new {
-      font-family: "CompareFont", sans-serif;
+      font-family: "MartianNew", sans-serif;
       background: #0d0d0d;
     }
 
@@ -253,11 +253,11 @@
     }
 
     .text-panel-content.old {
-      font-family: "BaseFont", sans-serif;
+      font-family: "MartianOld", sans-serif;
     }
 
     .text-panel-content.new {
-      font-family: "CompareFont", sans-serif;
+      font-family: "MartianNew", sans-serif;
     }
 
     .text-panel-content .new-char {
