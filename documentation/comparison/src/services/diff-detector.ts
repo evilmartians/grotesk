@@ -19,19 +19,20 @@ export function getDiffCps(): ReadonlySet<number> {
   return _diffCps;
 }
 
-function hasMetricDiff(ch: string, oldFont: string, newFont: string): boolean {
+function metricDiffPct(ch: string, oldFont: string, newFont: string): number {
   measureCtx.font = oldFont;
   const om = measureCtx.measureText(ch);
   measureCtx.font = newFont;
   const nm = measureCtx.measureText(ch);
 
-  return (
-    Math.abs(om.width - nm.width) > 1 ||
-    Math.abs(om.actualBoundingBoxLeft - nm.actualBoundingBoxLeft) > 1 ||
-    Math.abs(om.actualBoundingBoxRight - nm.actualBoundingBoxRight) > 1 ||
-    Math.abs(om.actualBoundingBoxAscent - nm.actualBoundingBoxAscent) > 1 ||
-    Math.abs(om.actualBoundingBoxDescent - nm.actualBoundingBoxDescent) > 1
+  const maxDelta = Math.max(
+    Math.abs(om.width - nm.width),
+    Math.abs(om.actualBoundingBoxLeft - nm.actualBoundingBoxLeft),
+    Math.abs(om.actualBoundingBoxRight - nm.actualBoundingBoxRight),
+    Math.abs(om.actualBoundingBoxAscent - nm.actualBoundingBoxAscent),
+    Math.abs(om.actualBoundingBoxDescent - nm.actualBoundingBoxDescent),
   );
+  return (maxDelta / MEASURE_SIZE) * 100;
 }
 
 function getAlpha(font: string, ch: string): Uint8ClampedArray {
@@ -48,12 +49,16 @@ function pixelDiffPct(
 ): number {
   const a = getAlpha(oldFont, ch);
   const b = getAlpha(newFont, ch);
-  const totalPixels = RENDER_SIZE * RENDER_SIZE;
   let diffCount = 0;
+  let unionCount = 0;
   for (let j = 3; j < a.length; j += 4) {
-    if (Math.abs(a[j]! - b[j]!) > 8) diffCount++;
+    const ao = a[j]!;
+    const bo = b[j]!;
+    if (ao > 16 || bo > 16) unionCount++;
+    if (Math.abs(ao - bo) > 8) diffCount++;
   }
-  return (diffCount / totalPixels) * 100;
+  if (unionCount === 0) return 0;
+  return (diffCount / unionCount) * 100;
 }
 
 export async function computeDiffs(
@@ -71,18 +76,21 @@ export async function computeDiffs(
   await document.fonts.ready;
   if (id !== _runId) return;
 
+  // Metric tolerance is one order of magnitude tighter than pixel threshold:
+  // metric is % of em (small numbers), pixel is % of glyph area (larger numbers).
+  const metricThreshold = threshold / 10;
+
   const cps = [...sharedCps];
   for (let i = 0; i < cps.length; i++) {
     const cp = cps[i]!;
     const ch = String.fromCodePoint(cp);
 
-    // Phase 1: fast metric check (catches bbox/spacing diffs like ŀ)
-    if (hasMetricDiff(ch, oldMeasure, newMeasure)) {
+    const mPct = metricDiffPct(ch, oldMeasure, newMeasure);
+    if (mPct > metricThreshold) {
       diffs.add(cp);
     } else if (threshold < 100) {
-      // Phase 2: pixel comparison for outline shape diffs
-      const pct = pixelDiffPct(oldRender, newRender, ch);
-      if (pct > threshold) diffs.add(cp);
+      const pPct = pixelDiffPct(oldRender, newRender, ch);
+      if (pPct > threshold) diffs.add(cp);
     }
 
     if (i % 50 === 49) {
