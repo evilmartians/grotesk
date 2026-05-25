@@ -20,7 +20,7 @@ export const $fsOpacity = atom(50);
 export const $fsBBox = atom<"off" | "on">("on");
 export const $charset = atom(0);
 export const $showDiff = atom(false);
-export const $diffThreshold = atom(1);
+export const $diffThreshold = atom(10);
 export const $diffVersion = atom(0);
 
 export const $visibleCps = computed([$filter, $charset], (filter) => {
