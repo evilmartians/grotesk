@@ -3,6 +3,8 @@
 #
 # Uses build.py instead of `gftools builder config.yaml` directly
 # to work around glyphsLib Smart Component bugs. See Instructions.txt.
+#
+# Pass --variable-only to build just the variable font (skips statics/webfonts).
 
 set -e
 
@@ -15,4 +17,4 @@ fi
 
 source venv/bin/activate
 pip install -q -r requirements.txt
-python build.py
+python build.py "$@"
