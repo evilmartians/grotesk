@@ -500,7 +500,7 @@ over = 12;
 pos = 848;
 }
 );
-name = "Normal Thin";
+name = Thin;
 stemValues = (
 40,
 36,
@@ -748,7 +748,7 @@ over = 16;
 pos = 848;
 }
 );
-name = "Normal Regular";
+name = Regular;
 stemValues = (
 110,
 100,
@@ -997,7 +997,7 @@ over = 20;
 pos = 848;
 }
 );
-name = "Normal ExtraBold";
+name = ExtraBold;
 stemValues = (
 180,
 142,
@@ -1246,7 +1246,7 @@ over = 26;
 pos = 848;
 }
 );
-name = "Normal UltraBlack";
+name = UltraBlack;
 stemValues = (
 320,
 54,
