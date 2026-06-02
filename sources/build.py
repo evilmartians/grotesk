@@ -16,12 +16,14 @@ and missing-master edge cases are fixed. The original source is never modified.
 Usage: python build.py  (run from grotesk/sources/)
 """
 
+import argparse
 import subprocess
 import sys
 import tempfile
 import shutil
 from pathlib import Path
 
+import yaml
 from glyphsLib import GSFont
 
 
@@ -168,6 +170,14 @@ def restore_dependencies(patches):
 
 
 def main():
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument(
+        "--variable-only",
+        action="store_true",
+        help="Build only the variable font (skip static OTF/TTF and webfonts)",
+    )
+    args = parser.parse_args()
+
     source = Path("MartianGrotesk.glyphs")
     if not source.exists():
         print(f"Error: {source} not found. Run from grotesk/sources/", file=sys.stderr)
@@ -191,7 +201,15 @@ def main():
             font.save(str(tmp_source))
 
             tmp_config = Path(tmpdir) / "config.yaml"
-            shutil.copy("config.yaml", tmp_config)
+            if args.variable_only:
+                # buildWebfont defaults to buildStatic, so disabling statics
+                # also skips OTF/TTF and webfonts — only the VF is built.
+                config = yaml.safe_load(Path("config.yaml").read_text())
+                config["buildStatic"] = False
+                tmp_config.write_text(yaml.safe_dump(config, sort_keys=False))
+                print("Variable-only build: static OTF/TTF and webfonts skipped")
+            else:
+                shutil.copy("config.yaml", tmp_config)
 
             print("Running gftools builder...")
             result = subprocess.run(
@@ -203,10 +221,20 @@ def main():
                 fonts_out = Path(tmpdir).parent / "fonts"
                 if fonts_out.exists():
                     dest = Path("..") / "fonts"
-                    if dest.exists():
-                        shutil.rmtree(dest)
-                    shutil.copytree(fonts_out, dest)
-                    shutil.rmtree(fonts_out)
+                    if args.variable_only:
+                        # Replace only the subdirs gftools produced (variable/),
+                        # leaving committed statics in otf/ttf/webfonts untouched.
+                        dest.mkdir(exist_ok=True)
+                        for sub in fonts_out.iterdir():
+                            target = dest / sub.name
+                            if target.exists():
+                                shutil.rmtree(target)
+                            shutil.move(str(sub), str(target))
+                    else:
+                        if dest.exists():
+                            shutil.rmtree(dest)
+                        shutil.copytree(fonts_out, dest)
+                    shutil.rmtree(fonts_out, ignore_errors=True)
                     print(f"Fonts written to {dest.resolve()}")
                 else:
                     print(f"Warning: expected output at {fonts_out} not found")
