@@ -120657,7 +120657,7 @@ unicode = 1224;
 {
 color = 1;
 glyphname = "entail-cy";
-lastChange = "2026-08-14 13:50:12 +0000";
+lastChange = "2026-08-14 15:40:01 +0000";
 layers = (
 {
 layerId = m009;
@@ -120699,9 +120699,13 @@ ref = "_part.bar-middle";
 {
 pos = (416,0);
 ref = "_part.stem-n";
+},
+{
+pos = (552,0);
+ref = _tail.descender.001;
 }
 );
-width = 648;
+width = 604;
 },
 {
 layerId = m010;
@@ -120719,9 +120723,13 @@ ref = "_part.bar-middle";
 {
 pos = (594,0);
 ref = "_part.stem-n";
+},
+{
+pos = (740,0);
+ref = _tail.descender.001;
 }
 );
-width = 846;
+width = 794;
 },
 {
 layerId = m005;
@@ -120739,9 +120747,13 @@ ref = "_part.bar-middle";
 {
 pos = (317,0);
 ref = "_part.stem-n";
+},
+{
+pos = (513,0);
+ref = _tail.descender.001;
 }
 );
-width = 599;
+width = 631;
 },
 {
 layerId = m01;
@@ -120759,9 +120771,13 @@ ref = "_part.bar-middle";
 {
 pos = (396,0);
 ref = "_part.stem-n";
+},
+{
+pos = (602,0);
+ref = _tail.descender.001;
 }
 );
-width = 698;
+width = 722;
 },
 {
 layerId = m003;
@@ -120779,9 +120795,13 @@ ref = "_part.bar-middle";
 {
 pos = (594,0);
 ref = "_part.stem-n";
+},
+{
+pos = (800,0);
+ref = _tail.descender.001;
 }
 );
-width = 896;
+width = 920;
 },
 {
 layerId = m006;
@@ -120799,9 +120819,13 @@ ref = "_part.bar-middle";
 {
 pos = (314,0);
 ref = "_part.stem-n";
+},
+{
+pos = (550,0);
+ref = _tail.descender.001;
 }
 );
-width = 606;
+width = 727;
 },
 {
 layerId = m002;
@@ -120819,9 +120843,13 @@ ref = "_part.bar-middle";
 {
 pos = (406,0);
 ref = "_part.stem-n";
+},
+{
+pos = (652,0);
+ref = _tail.descender.001;
 }
 );
-width = 718;
+width = 831;
 },
 {
 layerId = m004;
@@ -120839,9 +120867,13 @@ ref = "_part.bar-middle";
 {
 pos = (604,0);
 ref = "_part.stem-n";
+},
+{
+pos = (860,0);
+ref = _tail.descender.001;
 }
 );
-width = 936;
+width = 1041;
 },
 {
 layerId = "C0ED73B8-BF3D-4D9D-8EF3-572E464554C2";
@@ -120859,9 +120891,13 @@ ref = "_part.bar-middle";
 {
 pos = (300,0);
 ref = "_part.stem-n";
+},
+{
+pos = (604,0);
+ref = _tail.descender.001;
 }
 );
-width = 636;
+width = 859;
 },
 {
 layerId = m008;
@@ -120879,9 +120915,13 @@ ref = "_part.bar-middle";
 {
 pos = (352,0);
 ref = "_part.stem-n";
+},
+{
+pos = (704,0);
+ref = _tail.descender.001;
 }
 );
-width = 736;
+width = 1009;
 },
 {
 layerId = "434FAEF3-677A-47AD-84F7-3A7F762C5BD0";
@@ -120899,9 +120939,13 @@ ref = "_part.bar-middle";
 {
 pos = (552,0);
 ref = "_part.stem-n";
+},
+{
+pos = (984,0);
+ref = _tail.descender.001;
 }
 );
-width = 1016;
+width = 1329;
 }
 );
 unicode = 1226;
@@ -226634,7 +226678,7 @@ metricRight = SQR;
 color = 10;
 export = 0;
 glyphname = "_part.stem-n";
-lastChange = "2026-08-14 13:50:12 +0000";
+lastChange = "2026-08-14 15:39:40 +0000";
 layers = (
 {
 anchors = (
@@ -226645,6 +226689,10 @@ pos = (96,0);
 {
 name = "#exit";
 pos = (206,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m01;
@@ -226736,6 +226784,10 @@ pos = (66,0);
 {
 name = "#exit";
 pos = (246,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m002;
@@ -226827,6 +226879,10 @@ pos = (96,0);
 {
 name = "#exit";
 pos = (206,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m003;
@@ -226856,6 +226912,10 @@ pos = (76,0);
 {
 name = "#exit";
 pos = (256,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m004;
@@ -227009,6 +227069,10 @@ pos = (86,0);
 {
 name = "#exit";
 pos = (196,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m005;
@@ -227038,6 +227102,10 @@ pos = (56,0);
 {
 name = "#exit";
 pos = (236,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m006;
@@ -227191,6 +227259,10 @@ pos = (96,0);
 {
 name = "#exit";
 pos = (136,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m007;
@@ -227282,6 +227354,10 @@ pos = (32,0);
 {
 name = "#exit";
 pos = (352,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m008;
@@ -227476,6 +227552,10 @@ pos = (106,0);
 {
 name = "#exit";
 pos = (146,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = m010;
@@ -227567,6 +227647,10 @@ pos = (32,0);
 {
 name = "#exit";
 pos = (304,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = "C0ED73B8-BF3D-4D9D-8EF3-572E464554C2";
@@ -227596,6 +227680,10 @@ pos = (32,0);
 {
 name = "#exit";
 pos = (432,0);
+},
+{
+name = "skew-tail-1";
+pos = (146,0);
 }
 );
 layerId = "434FAEF3-677A-47AD-84F7-3A7F762C5BD0";
