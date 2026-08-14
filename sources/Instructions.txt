@@ -5,6 +5,15 @@ From the repo root:
 
 This creates a venv (if needed), installs deps, and runs build.py.
 
+Flags:
+  --variable-only   build the variable font only, skip statics and webfonts
+  --out DIR         write the fonts somewhere else than ../fonts
+                    (a relative DIR is resolved against sources/)
+
+Tool versions are pinned in requirements.txt so that a rebuild of unchanged
+sources gives the same glyph outlines. To upgrade a tool, relax its pin, run
+the build, check the fonts, then commit the new pin.
+
 Use build.py instead of running `gftools builder config.yaml` directly.
 
 The Martian Grotesk source uses Glyphs 3 Smart Components (reusable glyph
