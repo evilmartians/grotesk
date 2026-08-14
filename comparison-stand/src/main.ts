@@ -3,14 +3,22 @@ import "./styles/controls.css";
 import "./styles/grid.css";
 import "./styles/fullscreen.css";
 
-import { setFontFaces } from "./services/font-faces";
-import { refreshCharsets } from "./services/charset";
+import { loadManifest, $manifest } from "./services/manifest";
+import { updateFontFaces } from "./services/font-faces";
 
 import "./components/comparison-app";
+import "./components/stand-header";
 import "./components/fs-viewer";
 import "./components/controls";
 import "./components/text-preview";
 import "./components/glyph-grid";
 
-setFontFaces("MartianGrotesk-old.ttf", "MartianGrotesk-new.ttf");
-await refreshCharsets("MartianGrotesk-old.ttf", "MartianGrotesk-new.ttf");
+try {
+  $manifest.set(await loadManifest());
+} catch (error) {
+  document.body.textContent =
+    "No fonts to compare. Run `pnpm fonts` in comparison-stand/ first.";
+  throw error;
+}
+
+await updateFontFaces();

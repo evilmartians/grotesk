@@ -15,7 +15,7 @@ import {
   $fsBBox,
   $charset,
 } from "../state/atoms";
-import { getOnlyNew } from "../services/charset";
+import { getAddedCps } from "../services/charset";
 import { attachToggle, updateBBoxEl } from "../helpers/dom";
 import { getBlock } from "../helpers/unicode";
 
@@ -32,13 +32,13 @@ define("fs-viewer")
     nextBtn: r.one("button"),
     blockIndex: r.one("span"),
     body: r.one("div"),
-    oldSide: r.one("div"),
-    glyphOld: r.one("div"),
-    glyphNew: r.one("div"),
-    charOld: r.one("span"),
-    charNew: r.one("span"),
-    bboxOld: r.one("div"),
-    bboxNew: r.one("div"),
+    baselineSide: r.one("div"),
+    glyphBaseline: r.one("div"),
+    glyphCurrent: r.one("div"),
+    charBaseline: r.one("span"),
+    charCurrent: r.one("span"),
+    bboxBaseline: r.one("div"),
+    bboxCurrent: r.one("div"),
     bboxToggle: r.one("div"),
     legend: r.one("div"),
   }))
@@ -57,15 +57,15 @@ define("fs-viewer")
       const cp = cps[idx];
       if (cp === undefined) return;
 
-      const ONLY_NEW = getOnlyNew();
-      const isNew = ONLY_NEW.has(cp);
+      const ADDED_CPS = getAddedCps();
+      const isAdded = ADDED_CPS.has(cp);
       const char = String.fromCodePoint(cp);
       const hex = "U+" + cp.toString(16).toUpperCase().padStart(4, "0");
       const block = getBlock(cp);
 
       let titleHtml =
         `${char} <span class="cp">${hex}</span><span class="block-name">${block}</span>`;
-      if (isNew) titleHtml += `<span class="new-badge">NEW</span>`;
+      if (isAdded) titleHtml += `<span class="added-badge">ADDED</span>`;
       refs.title.innerHTML = titleHtml;
       refs.blockIndex.textContent = `${idx + 1} / ${cps.length}`;
 
@@ -74,22 +74,22 @@ define("fs-viewer")
       const vs = `"wght" ${w}, "wdth" ${wd}`;
       const size = $fsGlyphSize.get() + "px";
 
-      refs.glyphOld.style.fontSize = size;
-      refs.glyphOld.style.fontVariationSettings = vs;
-      refs.glyphNew.style.fontSize = size;
-      refs.glyphNew.style.fontVariationSettings = vs;
+      refs.glyphBaseline.style.fontSize = size;
+      refs.glyphBaseline.style.fontVariationSettings = vs;
+      refs.glyphCurrent.style.fontSize = size;
+      refs.glyphCurrent.style.fontVariationSettings = vs;
 
-      if (isNew) {
-        refs.oldSide.classList.add("unavailable");
-        refs.charOld.textContent = "";
-        refs.bboxOld.style.display = "none";
+      if (isAdded) {
+        refs.baselineSide.classList.add("unavailable");
+        refs.charBaseline.textContent = "";
+        refs.bboxBaseline.style.display = "none";
       } else {
-        refs.oldSide.classList.remove("unavailable");
-        refs.charOld.textContent = char;
-        updateBBoxEl(refs.bboxOld, refs.charOld);
+        refs.baselineSide.classList.remove("unavailable");
+        refs.charBaseline.textContent = char;
+        updateBBoxEl(refs.bboxBaseline, refs.charBaseline);
       }
-      refs.charNew.textContent = char;
-      updateBBoxEl(refs.bboxNew, refs.charNew);
+      refs.charCurrent.textContent = char;
+      updateBBoxEl(refs.bboxCurrent, refs.charCurrent);
     }
 
     function navigate(dir: number) {
@@ -148,12 +148,12 @@ define("fs-viewer")
         refs.body.classList.remove("overlay-mode");
         refs.legend.classList.remove("visible");
         refs.opacityGroup.style.display = "none";
-        refs.oldSide.style.opacity = "";
+        refs.baselineSide.style.opacity = "";
       }
     });
 
     ctx.effect($fsOpacity, (v) => {
       refs.opacityVal.textContent = v + "%";
-      refs.oldSide.style.opacity = String(v / 100);
+      refs.baselineSide.style.opacity = String(v / 100);
     });
   });

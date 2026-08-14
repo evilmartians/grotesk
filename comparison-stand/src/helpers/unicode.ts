@@ -1,5 +1,5 @@
 import { BLOCKS } from "../data/blocks";
-import { getOnlyNew } from "../services/charset";
+import { getAddedCps } from "../services/charset";
 import { getDiffCps } from "../services/diff-detector";
 import { $showDiff } from "../state/atoms";
 
@@ -26,22 +26,22 @@ export function groupByBlock(cps: readonly number[]): BlockGroup[] {
 }
 
 export function updateCell(el: Element, cp: number): void {
-  const onlyNew = getOnlyNew();
-  const isNew = onlyNew.has(cp);
+  const addedCps = getAddedCps();
+  const isAdded = addedCps.has(cp);
   const char = String.fromCodePoint(cp);
   const hex = "U+" + cp.toString(16).toUpperCase().padStart(4, "0");
 
-  const isDiff = !isNew && $showDiff.get() && getDiffCps().has(cp);
+  const isDiff = !isAdded && $showDiff.get() && getDiffCps().has(cp);
   let cls = "glyph-cell";
-  if (isNew) cls += " new-only";
+  if (isAdded) cls += " added";
   else if (isDiff) cls += " diff";
   (el as HTMLElement).className = cls;
   (el as HTMLElement).dataset.cp = String(cp);
   el.querySelector(".glyph-cp")!.textContent = hex;
 
-  const oldR = el.querySelector(".glyph-render.old")!;
-  const newR = el.querySelector(".glyph-render.new")!;
+  const baselineR = el.querySelector(".glyph-render.baseline")!;
+  const currentR = el.querySelector(".glyph-render.current")!;
 
-  oldR.textContent = isNew ? "" : char;
-  newR.textContent = char;
+  baselineR.textContent = isAdded ? "" : char;
+  currentR.textContent = char;
 }

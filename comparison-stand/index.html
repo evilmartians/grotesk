@@ -4,14 +4,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Martian Grotesk: Old vs GF Build Comparison</title>
+  <title>Martian Grotesk: main vs branch comparison</title>
 </head>
 
 <body>
 
   <comparison-app>
-    <h1>Martian Grotesk: Designer vs GF Build</h1>
-    <p class="subtitle">Side-by-side glyph comparison. Left = old (designer), Right = new (GF build).</p>
+    <stand-header>
+      <h1 data-ref="title">Martian Grotesk comparison</h1>
+      <p class="subtitle" data-ref="details">Loading fonts...</p>
+    </stand-header>
 
     <div class="controls">
       <source-toggle>
@@ -58,8 +60,8 @@
           <label>Filter</label>
           <div class="filter-buttons" data-ref="buttons">
             <button class="active" data-filter="all">All</button>
-            <button data-filter="both">Shared</button>
-            <button data-filter="new">New only</button>
+            <button data-filter="shared">Shared</button>
+            <button data-filter="added">Added</button>
           </div>
         </div>
       </filter-control>
@@ -76,8 +78,8 @@
         </div>
       </diff-toggle>
       <div class="stats">
-        <span class="old-count"></span>
-        <span class="new-count"></span>
+        <span class="baseline-count"></span>
+        <span class="current-count"></span>
       </div>
     </div>
 
@@ -93,7 +95,7 @@
         <div class="legend-swatch both"></div> In both fonts
       </div>
       <div class="legend-item">
-        <div class="legend-swatch new-only"></div> New in GF build
+        <div class="legend-swatch added"></div> Added in this branch
       </div>
       <div class="legend-item">
         <div class="legend-swatch diff"></div> Visual diff
@@ -112,10 +114,10 @@
         <div class="glyph-cell">
           <div class="glyph-cp"></div>
           <div class="glyph-pair">
-            <div class="glyph-render old"></div>
-            <div class="glyph-render new"></div>
+            <div class="glyph-render baseline"></div>
+            <div class="glyph-render current"></div>
           </div>
-          <div class="pair-labels"><span>old</span><span>new</span></div>
+          <div class="pair-labels"><span>main</span><span>branch</span></div>
         </div>
       </template>
 
@@ -139,12 +141,12 @@
           placeholder="Type or paste text here to preview in both fonts..."></textarea>
         <div class="text-preview-panels">
           <div class="text-panel">
-            <div class="text-panel-label">Old (designer)</div>
-            <div class="text-panel-content old" data-ref="oldPanel"></div>
+            <div class="text-panel-label">main</div>
+            <div class="text-panel-content baseline" data-ref="baselinePanel"></div>
           </div>
           <div class="text-panel">
-            <div class="text-panel-label">New (GF build)</div>
-            <div class="text-panel-content new" data-ref="newPanel"></div>
+            <div class="text-panel-label">this branch</div>
+            <div class="text-panel-content current" data-ref="currentPanel"></div>
           </div>
         </div>
       </div>
@@ -213,7 +215,7 @@
             </div>
           </div>
           <div class="control-group" data-ref="opacityGroup">
-            <label>Old layer opacity <span class="value" data-ref="opacityVal">50%</span></label>
+            <label>main layer opacity <span class="value" data-ref="opacityVal">50%</span></label>
             <input type="range" data-ref="opacity" min="0" max="100" value="50" step="1">
           </div>
           <div class="fs-nav">
@@ -224,25 +226,25 @@
         </div>
       </div>
       <div class="fs-body overlay-mode show-bbox" data-ref="body">
-        <div class="fs-side old" data-ref="oldSide" style="opacity:0.5">
-          <div class="fs-side-label">Old (designer)</div>
-          <div class="fs-glyph" data-ref="glyphOld"><span data-ref="charOld"></span>
-            <div class="fs-bbox" data-ref="bboxOld"></div>
+        <div class="fs-side baseline" data-ref="baselineSide" style="opacity:0.5">
+          <div class="fs-side-label">main</div>
+          <div class="fs-glyph" data-ref="glyphBaseline"><span data-ref="charBaseline"></span>
+            <div class="fs-bbox" data-ref="bboxBaseline"></div>
           </div>
         </div>
-        <div class="fs-side new">
-          <div class="fs-side-label">New (GF build)</div>
-          <div class="fs-glyph" data-ref="glyphNew"><span data-ref="charNew"></span>
-            <div class="fs-bbox" data-ref="bboxNew"></div>
+        <div class="fs-side current">
+          <div class="fs-side-label">this branch</div>
+          <div class="fs-glyph" data-ref="glyphCurrent"><span data-ref="charCurrent"></span>
+            <div class="fs-bbox" data-ref="bboxCurrent"></div>
           </div>
         </div>
       </div>
       <div class="overlay-legend visible" data-ref="legend">
         <div class="ol-item">
-          <div class="ol-swatch old-color"></div> Old only (red)
+          <div class="ol-swatch baseline-color"></div> main only (red)
         </div>
         <div class="ol-item">
-          <div class="ol-swatch new-color"></div> New only (blue)
+          <div class="ol-swatch current-color"></div> this branch only (blue)
         </div>
         <div class="ol-item">
           <div class="ol-swatch match-color"></div> Overlap (pink/white)

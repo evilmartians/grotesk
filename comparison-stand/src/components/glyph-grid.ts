@@ -13,7 +13,7 @@ import {
   $diffVersion,
   $charset,
 } from "../state/atoms";
-import { getOnlyNew } from "../services/charset";
+import { getAddedCps } from "../services/charset";
 import { computeDiffs, clearDiffs, getDiffCps } from "../services/diff-detector";
 import { groupByBlock, updateCell } from "../helpers/unicode";
 
@@ -38,19 +38,19 @@ define("glyph-grid")
     });
 
     ctx.effect($visibleCps, (cps) => {
-      const onlyNew = getOnlyNew();
+      const addedCps = getAddedCps();
       const blocks = groupByBlock(cps);
       renderList(refs.content, refs.blockTpl, {
         data: blocks,
         key: (b) => b.name,
         update: (el, block) => {
-          const newCount = block.cps.filter((c) => onlyNew.has(c)).length;
-          const newLabel =
-            newCount > 0
-              ? ` <span style="color:#6e6">(+${newCount} new)</span>`
+          const addedCount = block.cps.filter((c) => addedCps.has(c)).length;
+          const addedLabel =
+            addedCount > 0
+              ? ` <span style="color:#6e6">(+${addedCount} added)</span>`
               : "";
           el.querySelector(".block-title")!.innerHTML =
-            `${block.name} <span class="count">${block.cps.length} glyphs${newLabel}</span>`;
+            `${block.name} <span class="count">${block.cps.length} glyphs${addedLabel}</span>`;
 
           renderList(el.querySelector(".glyph-grid")!, refs.cellTpl, {
             data: block.cps,
@@ -65,11 +65,11 @@ define("glyph-grid")
     ctx.effect($diffVersion, () => {
       const showDiff = $showDiff.get();
       const diffCps = getDiffCps();
-      const onlyNew = getOnlyNew();
+      const addedCps = getAddedCps();
       refs.content.querySelectorAll<HTMLElement>(".glyph-cell").forEach((cell) => {
         const cp = Number(cell.dataset.cp);
-        const isNew = onlyNew.has(cp);
-        const isDiff = !isNew && showDiff && diffCps.has(cp);
+        const isAdded = addedCps.has(cp);
+        const isDiff = !isAdded && showDiff && diffCps.has(cp);
         cell.classList.toggle("diff", isDiff);
       });
     });
@@ -77,8 +77,8 @@ define("glyph-grid")
     ctx.effect([$showDiff, $charset], () => {
       if (!$showDiff.get()) { clearDiffs(); return; }
       const cps = $visibleCps.get();
-      const onlyNew = getOnlyNew();
-      const shared = new Set(cps.filter((cp: number) => !onlyNew.has(cp)));
+      const addedCps = getAddedCps();
+      const shared = new Set(cps.filter((cp: number) => !addedCps.has(cp)));
       computeDiffs(shared);
     });
 

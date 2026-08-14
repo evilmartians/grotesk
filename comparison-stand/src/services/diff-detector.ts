@@ -19,10 +19,10 @@ export function getDiffCps(): ReadonlySet<number> {
   return _diffCps;
 }
 
-function metricDiffPct(ch: string, oldFont: string, newFont: string): number {
-  measureCtx.font = oldFont;
+function metricDiffPct(ch: string, baselineFont: string, currentFont: string): number {
+  measureCtx.font = baselineFont;
   const om = measureCtx.measureText(ch);
-  measureCtx.font = newFont;
+  measureCtx.font = currentFont;
   const nm = measureCtx.measureText(ch);
 
   const maxDelta = Math.max(
@@ -43,12 +43,12 @@ function getAlpha(font: string, ch: string): Uint8ClampedArray {
 }
 
 function pixelDiffPct(
-  oldFont: string,
-  newFont: string,
+  baselineFont: string,
+  currentFont: string,
   ch: string,
 ): number {
-  const a = getAlpha(oldFont, ch);
-  const b = getAlpha(newFont, ch);
+  const a = getAlpha(baselineFont, ch);
+  const b = getAlpha(currentFont, ch);
   let diffCount = 0;
   let unionCount = 0;
   for (let j = 3; j < a.length; j += 4) {
@@ -68,10 +68,10 @@ export async function computeDiffs(
   const diffs = new Set<number>();
   const threshold = $diffThreshold.get();
 
-  const oldMeasure = `${MEASURE_SIZE}px "MartianOld"`;
-  const newMeasure = `${MEASURE_SIZE}px "MartianNew"`;
-  const oldRender = `${FONT_PX}px "MartianOld"`;
-  const newRender = `${FONT_PX}px "MartianNew"`;
+  const baselineMeasure = `${MEASURE_SIZE}px "MartianBaseline"`;
+  const currentMeasure = `${MEASURE_SIZE}px "MartianCurrent"`;
+  const baselineRender = `${FONT_PX}px "MartianBaseline"`;
+  const currentRender = `${FONT_PX}px "MartianCurrent"`;
 
   await document.fonts.ready;
   if (id !== _runId) return;
@@ -85,11 +85,11 @@ export async function computeDiffs(
     const cp = cps[i]!;
     const ch = String.fromCodePoint(cp);
 
-    const mPct = metricDiffPct(ch, oldMeasure, newMeasure);
+    const mPct = metricDiffPct(ch, baselineMeasure, currentMeasure);
     if (mPct > metricThreshold) {
       diffs.add(cp);
     } else if (threshold < 100) {
-      const pPct = pixelDiffPct(oldRender, newRender, ch);
+      const pPct = pixelDiffPct(baselineRender, currentRender, ch);
       if (pPct > threshold) diffs.add(cp);
     }
 

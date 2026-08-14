@@ -1,7 +1,7 @@
 import { define } from "nanotags";
 import { slidersCtx } from "../state/context";
 import { $previewText } from "../state/atoms";
-import { getOnlyNew } from "../services/charset";
+import { getAddedCps } from "../services/charset";
 import { SAMPLE_TEXTS } from "../data/sample-texts";
 
 define("text-preview")
@@ -9,8 +9,8 @@ define("text-preview")
   .withRefs((r) => ({
     samples: r.one("select"),
     input: r.one("textarea"),
-    oldPanel: r.one("div"),
-    newPanel: r.one("div"),
+    baselinePanel: r.one("div"),
+    currentPanel: r.one("div"),
   }))
   .setup((ctx) => {
     const { $weight, $width, $glyphSize } = ctx.contexts.sliders;
@@ -24,13 +24,13 @@ define("text-preview")
     });
 
     function renderText(text: string) {
-      const onlyNew = getOnlyNew();
-      refs.oldPanel.textContent = text;
+      const addedCps = getAddedCps();
+      refs.baselinePanel.textContent = text;
       const html = Array.from(text).map((ch) => {
         const cp = ch.codePointAt(0)!;
-        return onlyNew.has(cp) ? `<span class="new-char">${ch}</span>` : ch;
+        return addedCps.has(cp) ? `<span class="added-char">${ch}</span>` : ch;
       }).join("");
-      refs.newPanel.innerHTML = html || "";
+      refs.currentPanel.innerHTML = html || "";
     }
 
     ctx.effect($previewText, renderText);

@@ -1,5 +1,5 @@
 import { atom, computed } from "nanostores";
-import { getAllCodepoints, getOnlyNew } from "../services/charset";
+import { getAllCodepoints, getAddedCps } from "../services/charset";
 
 export const $fontSource = atom<"variable" | "static">("variable");
 export const $staticWidthIdx = atom(2);
@@ -7,7 +7,7 @@ export const $staticWeightIdx = atom(3);
 export const $weight = atom(400);
 export const $width = atom(100);
 export const $glyphSize = atom(32);
-export const $filter = atom<"all" | "both" | "new">("all");
+export const $filter = atom<"all" | "shared" | "added">("all");
 export const $view = atom<"grid" | "text">("grid");
 export const $previewText = atom("");
 export const $fsOpen = atom(false);
@@ -25,11 +25,11 @@ export const $diffVersion = atom(0);
 
 export const $visibleCps = computed([$filter, $charset], (filter) => {
   const all = getAllCodepoints();
-  const onlyNew = getOnlyNew();
+  const addedCps = getAddedCps();
   return all.filter((cp) => {
-    const isNew = onlyNew.has(cp);
-    if (filter === "both" && isNew) return false;
-    if (filter === "new" && !isNew) return false;
+    const isAdded = addedCps.has(cp);
+    if (filter === "shared" && isAdded) return false;
+    if (filter === "added" && !isAdded) return false;
     return true;
   });
 });

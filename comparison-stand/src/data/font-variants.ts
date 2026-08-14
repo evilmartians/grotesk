@@ -1,27 +1,21 @@
-export type FontVariant = {
-  readonly label: string;
-  readonly old: string;
-  readonly new: string;
-};
-
-export const FONT_WIDTHS: readonly FontVariant[] = [
-  { label: "Condensed", old: "Cn", new: "Condensed" },
-  { label: "Semi Condensed", old: "Nr", new: "SemiCondensed" },
-  { label: "Normal", old: "Std", new: "" },
-  { label: "Semi Expanded", old: "sWd", new: "SemiExpanded" },
-  { label: "Expanded", old: "Wd", new: "Expanded" },
-  { label: "Extra Expanded", old: "xWd", new: "ExtraExpanded" },
-  { label: "Ultra Expanded", old: "uWd", new: "UltraExpanded" },
+export const FONT_WIDTHS = [
+  { label: "Condensed", name: "Condensed" },
+  { label: "Semi Condensed", name: "SemiCondensed" },
+  { label: "Normal", name: "" },
+  { label: "Semi Expanded", name: "SemiExpanded" },
+  { label: "Expanded", name: "Expanded" },
+  { label: "Extra Expanded", name: "ExtraExpanded" },
+  { label: "Ultra Expanded", name: "UltraExpanded" },
 ] as const;
 
-export const FONT_WEIGHTS: readonly FontVariant[] = [
-  { label: "Thin", old: "Th", new: "Thin" },
-  { label: "Extra Light", old: "xLt", new: "ExtraLight" },
-  { label: "Light", old: "Lt", new: "Light" },
-  { label: "Regular", old: "Rg", new: "Regular" },
-  { label: "Medium", old: "Md", new: "Medium" },
-  { label: "Bold", old: "Bd", new: "Bold" },
-  { label: "Extra Bold", old: "xBd", new: "ExtraBold" },
-  { label: "Black", old: "Bl", new: "Black" },
-  { label: "Ultra Black", old: "Ult", new: "UltraBlack" },
+export const FONT_WEIGHTS = [
+  { label: "Thin", name: "Thin" },
+  { label: "Extra Light", name: "ExtraLight" },
+  { label: "Light", name: "Light" },
+  { label: "Regular", name: "Regular" },
+  { label: "Medium", name: "Medium" },
+  { label: "Bold", name: "Bold" },
+  { label: "Extra Bold", name: "ExtraBold" },
+  { label: "Black", name: "Black" },
+  { label: "Ultra Black", name: "UltraBlack" },
 ] as const;

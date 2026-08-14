@@ -18,7 +18,11 @@ define("comparison-app")
   .setup((ctx) => {
     slidersCtx.provide(ctx, { $weight, $width, $glyphSize });
 
-    ctx.effect($fontSource, () => updateFontFaces());
+    // The callback must not return the promise: nanotags treats a returned
+    // value as a cleanup function and calls it on the next run.
+    ctx.effect($fontSource, () => {
+      updateFontFaces();
+    });
     ctx.effect([$staticWidthIdx, $staticWeightIdx], () => {
       if ($fontSource.get() === "static") updateFontFaces();
     });

@@ -41,7 +41,7 @@
       border-color: #444;
     }
 
-    .glyph-cell.new-only {
+    .glyph-cell.added {
       border-color: #264026;
     }
 
@@ -82,21 +82,21 @@
       border-radius: 2px;
     }
 
-    .glyph-render.old {
-      font-family: "MartianOld", sans-serif;
+    .glyph-render.baseline {
+      font-family: "MartianBaseline", sans-serif;
       background: #0d0d0d;
     }
 
-    .glyph-render.new {
-      font-family: "MartianNew", sans-serif;
+    .glyph-render.current {
+      font-family: "MartianCurrent", sans-serif;
       background: #0d0d0d;
     }
 
-    .glyph-cell.new-only .glyph-render.old {
+    .glyph-cell.added .glyph-render.baseline {
       color: #333;
     }
 
-    .glyph-cell.new-only .glyph-render.old::after {
+    .glyph-cell.added .glyph-render.baseline::after {
       content: "n/a";
       font-size: 9px;
       font-family: monospace;
@@ -143,7 +143,7 @@
       background: #111;
     }
 
-    .legend-swatch.new-only {
+    .legend-swatch.added {
       border-color: #264026;
       background: #111;
     }
@@ -252,15 +252,15 @@
       word-break: break-word;
     }
 
-    .text-panel-content.old {
-      font-family: "MartianOld", sans-serif;
+    .text-panel-content.baseline {
+      font-family: "MartianBaseline", sans-serif;
     }
 
-    .text-panel-content.new {
-      font-family: "MartianNew", sans-serif;
+    .text-panel-content.current {
+      font-family: "MartianCurrent", sans-serif;
     }
 
-    .text-panel-content .new-char {
+    .text-panel-content .added-char {
       background: #1a2e1a;
       border-radius: 2px;
     }

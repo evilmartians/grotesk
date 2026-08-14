@@ -10,6 +10,7 @@ import {
   $diffThreshold,
 } from "../state/atoms";
 import { attachToggle, populateSelect } from "../helpers/dom";
+import { $manifest } from "../services/manifest";
 import { FONT_WIDTHS, FONT_WEIGHTS } from "../data/font-variants";
 
 define("source-toggle")
@@ -18,6 +19,18 @@ define("source-toggle")
   }))
   .setup((ctx) => {
     attachToggle(ctx, ctx.refs.toggle, $fontSource, "src");
+
+    // A pull request preview ships the variable font only.
+    ctx.effect($manifest, (manifest) => {
+      const button = ctx.refs.toggle.querySelector<HTMLElement>(
+        "[data-src='static']",
+      );
+      if (!button) return;
+
+      const hasStatics = manifest?.hasStatics ?? false;
+      button.hidden = !hasStatics;
+      if (!hasStatics) $fontSource.set("variable");
+    });
   });
 
 define("var-controls")

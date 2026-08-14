@@ -1,11 +1,16 @@
 {
-  "name": "comparison",
+  "name": "comparison-stand",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@11.21.0",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "typecheck": "tsc --noEmit",
+    "fonts": "./scripts/prepare-fonts.sh --current build",
+    "fonts:full": "./scripts/prepare-fonts.sh --current full",
+    "fonts:tree": "./scripts/prepare-fonts.sh --current tree"
   },
   "dependencies": {
     "nanostores": "^1.1.1",

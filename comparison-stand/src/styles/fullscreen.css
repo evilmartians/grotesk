@@ -44,7 +44,7 @@
       margin-left: 12px;
     }
 
-    .fs-title .new-badge {
+    .fs-title .added-badge {
       font-size: 10px;
       font-weight: 600;
       color: #6e6;
@@ -157,28 +157,28 @@
       display: block;
     }
 
-    .fs-body.overlay-mode .fs-side.old .fs-bbox {
+    .fs-body.overlay-mode .fs-side.baseline .fs-bbox {
       border-color: rgba(238, 68, 68, 0.7);
     }
 
-    .fs-body.overlay-mode .fs-side.new .fs-bbox {
+    .fs-body.overlay-mode .fs-side.current .fs-bbox {
       border-color: rgba(68, 136, 255, 0.7);
     }
 
-    .fs-side.old .fs-glyph {
-      font-family: "MartianOld", sans-serif;
+    .fs-side.baseline .fs-glyph {
+      font-family: "MartianBaseline", sans-serif;
     }
 
-    .fs-side.new .fs-glyph {
-      font-family: "MartianNew", sans-serif;
+    .fs-side.current .fs-glyph {
+      font-family: "MartianCurrent", sans-serif;
     }
 
-    .fs-side.old.unavailable .fs-glyph {
+    .fs-side.baseline.unavailable .fs-glyph {
       display: none;
     }
 
-    .fs-side.old.unavailable::after {
-      content: "not in old font";
+    .fs-side.baseline.unavailable::after {
+      content: "not in main";
       font-size: 14px;
       color: #333;
       font-family: system-ui, sans-serif;
@@ -193,30 +193,30 @@
       grid-column: 1;
     }
 
-    .fs-body.overlay-mode .fs-side.old {
+    .fs-body.overlay-mode .fs-side.baseline {
       background: transparent;
       border-color: transparent;
       z-index: 2;
       mix-blend-mode: screen;
     }
 
-    .fs-body.overlay-mode .fs-side.old .fs-glyph {
+    .fs-body.overlay-mode .fs-side.baseline .fs-glyph {
       color: #e44;
     }
 
-    .fs-body.overlay-mode .fs-side.old .fs-side-label {
+    .fs-body.overlay-mode .fs-side.baseline .fs-side-label {
       color: #e44;
     }
 
-    .fs-body.overlay-mode .fs-side.new {
+    .fs-body.overlay-mode .fs-side.current {
       z-index: 1;
     }
 
-    .fs-body.overlay-mode .fs-side.new .fs-glyph {
+    .fs-body.overlay-mode .fs-side.current .fs-glyph {
       color: #48f;
     }
 
-    .fs-body.overlay-mode .fs-side.new .fs-side-label {
+    .fs-body.overlay-mode .fs-side.current .fs-side-label {
       color: #48f;
     }
 
@@ -274,11 +274,11 @@
       border-radius: 2px;
     }
 
-    .overlay-legend .ol-swatch.old-color {
+    .overlay-legend .ol-swatch.baseline-color {
       background: #e44;
     }
 
-    .overlay-legend .ol-swatch.new-color {
+    .overlay-legend .ol-swatch.current-color {
       background: #48f;
     }
 
