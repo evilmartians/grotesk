@@ -13,7 +13,7 @@ This script:
 Smart component interpolation is preserved — only the 'Group' metadata
 and missing-master edge cases are fixed. The original source is never modified.
 
-Usage: python build.py  (run from grotesk/sources/)
+Usage: python build.py [--variable-only] [--out DIR]  (run from grotesk/sources/)
 """
 
 import argparse
@@ -176,6 +176,12 @@ def main():
         action="store_true",
         help="Build only the variable font (skip static OTF/TTF and webfonts)",
     )
+    parser.add_argument(
+        "--out",
+        default="../fonts",
+        metavar="DIR",
+        help="Where to write the built fonts (default: ../fonts)",
+    )
     args = parser.parse_args()
 
     source = Path("MartianGrotesk.glyphs")
@@ -196,11 +202,16 @@ def main():
 
     try:
         with tempfile.TemporaryDirectory() as tmpdir:
-            tmp_source = Path(tmpdir) / source.name
+            # gftools writes to <config dir>/../fonts, so the copy goes into a
+            # "sources" subdir to keep the output inside tmpdir.
+            tmp_sources = Path(tmpdir) / "sources"
+            tmp_sources.mkdir()
+
+            tmp_source = tmp_sources / source.name
             print(f"Saving to {tmp_source}...")
             font.save(str(tmp_source))
 
-            tmp_config = Path(tmpdir) / "config.yaml"
+            tmp_config = tmp_sources / "config.yaml"
             if args.variable_only:
                 # buildWebfont defaults to buildStatic, so disabling statics
                 # also skips OTF/TTF and webfonts — only the VF is built.
@@ -214,17 +225,17 @@ def main():
             print("Running gftools builder...")
             result = subprocess.run(
                 ["gftools", "builder", str(tmp_config)],
-                cwd=tmpdir,
+                cwd=tmp_sources,
             )
 
             if result.returncode == 0:
-                fonts_out = Path(tmpdir).parent / "fonts"
+                fonts_out = Path(tmpdir) / "fonts"
                 if fonts_out.exists():
-                    dest = Path("..") / "fonts"
+                    dest = Path(args.out)
                     if args.variable_only:
                         # Replace only the subdirs gftools produced (variable/),
-                        # leaving committed statics in otf/ttf/webfonts untouched.
-                        dest.mkdir(exist_ok=True)
+                        # leaving any statics already in dest untouched.
+                        dest.mkdir(parents=True, exist_ok=True)
                         for sub in fonts_out.iterdir():
                             target = dest / sub.name
                             if target.exists():

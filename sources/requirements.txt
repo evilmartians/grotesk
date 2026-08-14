@@ -1,6 +1,17 @@
-fontmake>=3.11.1
-fontbakery>=1.1.0
-gftools[qa]>=0.9.996
-drawbot-skia>=0.5.1
-sh>=2.2.2
-bumpfontversion>=0.4.1
+# Pinned so that a font diff in a pull request comes from a source change,
+# never from a tool update.
+#
+# glyphsLib, ufo2ft and fonttools are pinned as well even though they are
+# indirect: build.py patches glyphsLib and ufo2ft by exact source strings,
+# and fonttools decides how the binaries are written.
+#
+# To upgrade: relax a pin, run the build, check the fonts, commit the new pin.
+fontmake==3.12.1
+fontbakery==1.1.0
+gftools[qa]==0.9.996
+drawbot-skia==0.5.1
+sh==2.4.0
+bumpfontversion==0.4.1
+glyphsLib==6.14.0
+ufo2ft==3.9.0
+fonttools==4.63.0

@@ -5,6 +5,10 @@
 # to work around glyphsLib Smart Component bugs. See Instructions.txt.
 #
 # Pass --variable-only to build just the variable font (skips statics/webfonts).
+# Pass --out DIR to write somewhere else than ../fonts. A relative DIR is
+# resolved against this directory.
+#
+# Set PYTHON to pick the interpreter for the venv (default: python3).
 
 set -e
 
@@ -12,7 +16,7 @@ cd "$(dirname "$0")"
 
 if [ ! -d "venv" ]; then
     echo "Creating virtual environment..."
-    python3 -m venv venv
+    "${PYTHON:-python3}" -m venv venv
 fi
 
 source venv/bin/activate
