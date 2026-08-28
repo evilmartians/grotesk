@@ -106,6 +106,16 @@ sources/build.sh
 
 The script sets up a venv with pinned `gftools` / `glyphsLib` / `fontmake` (see `sources/requirements.txt`), then runs `build.py`, which wraps `gftools builder` (`sources/config.yaml`) with two upstream workarounds — Glyphs 3 Smart Components and the static-instance bracket-layer swap for cent/dollar. The source `.glyphs` file is never mutated; the pipeline works on a temp copy. See `sources/Instructions.txt` for details.
 
+## Checks
+
+Run [fontspector](https://github.com/fonttools/fontspector) QA against the variable font with the Google Fonts profile:
+
+```bash
+sources/check.sh
+```
+
+fontspector is a standalone binary (`cargo install fontspector`), separate from the build venv. Extra args are forwarded to fontspector, e.g. `sources/check.sh -l fail` to show only failures. Pass a font path to check a different file, e.g. `sources/check.sh fonts/ttf/MartianGrotesk-Regular.ttf`.
+
 ## Language support
 
 The typeface supports 308 languages: 297 based on the Latin script and 11 using the Cyrillic script.
