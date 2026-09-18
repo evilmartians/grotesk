@@ -393,7 +393,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -476,7 +476,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -559,7 +559,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -642,7 +642,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -725,7 +725,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -807,7 +807,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -890,7 +890,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -973,7 +973,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -1056,7 +1056,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -1139,7 +1139,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -1222,7 +1222,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
@@ -1305,7 +1305,7 @@ axesValues = (
 customParameters = (
 {
 name = winAscent;
-value = 1130;
+value = 1270;
 },
 {
 name = winDescent;
